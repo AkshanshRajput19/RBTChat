@@ -39,7 +39,7 @@ app.use("/api/stories", storyRoutes);
 app.use("/api/ai", aiRoutes);
 
 app.get("/", (req, res) => {
-  res.send("RBTChat Backend Running Successfully");
+  res.send("RBTChat Backend Running Successfully....");
 });
 
 app.get("/api/test", (req, res) => {
