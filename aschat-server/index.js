@@ -1,5 +1,12 @@
+const fs = require("fs");
 const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, ".env") });
+
+const envPath = path.join(__dirname, ".env");
+
+// Only load the local .env file during local development.
+if (process.env.NODE_ENV !== "production" && fs.existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+}
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -7,6 +14,7 @@ const jwt = require("jsonwebtoken");
 const { Server } = require("socket.io");
 
 const connectDB = require("./config/db");
+const { uploadsRoot } = require("./config/uploads");
 const userRoutes = require("./routes/userRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const groupRoutes = require("./routes/groupRoutes");
@@ -30,13 +38,14 @@ app.use(
 );
 
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadsRoot));
 
 app.use("/api", userRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/stories", storyRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/analytics", require("./routes/analytics"));
 
 app.get("/", (req, res) => {
   res.send("RBTChat Backend Running Successfully....");
@@ -143,6 +152,17 @@ io.on("connection", (socket) => {
 
     io.emit("online-users", Array.from(onlineUsers.keys()));
   });
+});
+
+httpServer.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(
+      `Port ${PORT} is already in use. Stop the existing process or set PORT in aschat-server/.env to a free port.`
+    );
+    process.exit(1);
+  }
+
+  throw error;
 });
 
 httpServer.listen(PORT, () => {
