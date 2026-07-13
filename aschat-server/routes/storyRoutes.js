@@ -3,12 +3,13 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const Story = require("../models/Story");
+const { storiesUploadsDirectory } = require("../config/uploads");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 router.use(authMiddleware);
 
-const uploadsDirectory = path.join(__dirname, "..", "uploads", "stories");
+const uploadsDirectory = storiesUploadsDirectory;
 fs.mkdirSync(uploadsDirectory, { recursive: true });
 
 const storage = multer.diskStorage({

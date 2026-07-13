@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+// ✅ Use the environment variable Render has
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
 let socket = null;
 
@@ -28,3 +28,5 @@ export const disconnectSocket = () => {
     socket = null;
   }
 };
+
+export const getSocket = () => socket;

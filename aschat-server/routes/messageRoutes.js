@@ -5,10 +5,27 @@ const path = require("path");
 const fs = require("fs");
 const Message = require("../models/Message");
 const User = require("../models/User");
+const { uploadsRoot } = require("../config/uploads");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 const router = express.Router();
-const uploadsDirectory = path.join(__dirname, "..", "uploads");
+const uploadsDirectory = uploadsRoot;
+
+const getTenantId = (req) => String(req.tenantId || "").trim() || "default";
+
+const tenantScopeQuery = (tenantId) => ({
+  $or: [
+    { tenantId },
+    { tenantId: "default" },
+    { tenantId: { $exists: false } },
+    { tenantId: null }
+  ]
+});
+
+const visibleUserQuery = (userId, tenantId) => ({
+  _id: userId,
+  ...tenantScopeQuery(tenantId)
+});
 
 fs.mkdirSync(uploadsDirectory, { recursive: true });
 
@@ -51,6 +68,7 @@ router.use(authMiddleware);
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
+    const tenantId = getTenantId(req);
 
     if (!mongoose.isValidObjectId(userId)) {
       return res.status(400).json({
@@ -59,7 +77,7 @@ router.get("/:userId", async (req, res) => {
       });
     }
 
-    const receiverUser = await User.findOne({ _id: userId, tenantId: req.tenantId });
+    const receiverUser = await User.findOne(visibleUserQuery(userId, tenantId));
     if (!receiverUser) {
       return res.status(404).json({
         success: false,
@@ -68,15 +86,24 @@ router.get("/:userId", async (req, res) => {
     }
 
     const messages = await Message.find({
-      tenantId: req.tenantId,
-      $or: [
-        { sender: req.userId, receiver: userId },
-        { sender: userId, receiver: req.userId }
+      $and: [
+        tenantScopeQuery(tenantId),
+        {
+          $or: [
+            { sender: req.userId, receiver: userId },
+            { sender: userId, receiver: req.userId }
+          ]
+        }
       ]
     }).sort({ createdAt: 1 });
 
     await Message.updateMany(
-      { tenantId: req.tenantId, sender: userId, receiver: req.userId, read: false },
+      {
+        $and: [
+          tenantScopeQuery(tenantId),
+          { sender: userId, receiver: req.userId, read: false }
+        ]
+      },
       { $set: { read: true } }
     );
 
@@ -92,6 +119,7 @@ router.get("/:userId", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    const tenantId = getTenantId(req);
     const receiver = String(req.body.receiver || "");
     const text = String(req.body.text || "").trim();
     const messageType = String(req.body.type || "text");
@@ -124,7 +152,7 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const receiverExists = await User.exists({ _id: receiver, tenantId: req.tenantId });
+    const receiverExists = await User.exists(visibleUserQuery(receiver, tenantId));
 
     if (!receiverExists) {
       return res.status(404).json({
@@ -134,7 +162,7 @@ router.post("/", async (req, res) => {
     }
 
     const message = await Message.create({
-      tenantId: req.tenantId,
+      tenantId,
       sender: req.userId,
       receiver,
       type: messageType,
@@ -153,6 +181,7 @@ router.post("/", async (req, res) => {
 
 router.post("/media", upload.single("media"), async (req, res) => {
   try {
+    const tenantId = getTenantId(req);
     const receiver = String(req.body.receiver || "");
     const mediaType = String(req.body.mediaType || "");
 
@@ -195,7 +224,7 @@ router.post("/media", upload.single("media"), async (req, res) => {
       });
     }
 
-    const receiverExists = await User.exists({ _id: receiver, tenantId: req.tenantId });
+    const receiverExists = await User.exists(visibleUserQuery(receiver, tenantId));
 
     if (!receiverExists) {
       fs.unlink(req.file.path, () => {});
@@ -206,7 +235,7 @@ router.post("/media", upload.single("media"), async (req, res) => {
     }
 
     const message = await Message.create({
-      tenantId: req.tenantId,
+      tenantId,
       sender: req.userId,
       receiver,
       type: mediaType,
@@ -234,6 +263,7 @@ router.delete("/:messageId", async (req, res) => {
   try {
     const { messageId } = req.params;
     const scope = String(req.query.scope || "me");
+    const tenantId = getTenantId(req);
 
     if (!mongoose.isValidObjectId(messageId)) {
       return res.status(400).json({
@@ -249,7 +279,9 @@ router.delete("/:messageId", async (req, res) => {
       });
     }
 
-    const message = await Message.findOne({ _id: messageId, tenantId: req.tenantId });
+    const message = await Message.findOne({
+      $and: [{ _id: messageId }, tenantScopeQuery(tenantId)]
+    });
 
     if (!message) {
       return res.status(404).json({

@@ -3,12 +3,13 @@ import api from "../api";
 import useWebRTCCall from "../hooks/useWebRTCCall";
 import CallOverlay from "./CallOverlay";
 import "./Chat.css";
-const SERVER_ORIGIN =
-import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
+
 function Chat({ currentUser, socket }) {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
+  const [sessionId, setSessionId] = useState(null);
+  const [sessionStarted, setSessionStarted] = useState(false);
   const [message, setMessage] = useState("");
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -33,6 +34,7 @@ function Chat({ currentUser, socket }) {
   const [aiError, setAiError] = useState("");
   const [aiAnalysis, setAiAnalysis] = useState(null);
   const [predictedReplies, setPredictedReplies] = useState([]);
+  const [showAiPanel, setShowAiPanel] = useState(false);
   const [isLoadingPredictive, setIsLoadingPredictive] = useState(false);
   const [userPatterns, setUserPatterns] = useState(null);
   const [contextualInsight, setContextualInsight] = useState(null);
@@ -92,6 +94,32 @@ function Chat({ currentUser, socket }) {
   }, [currentUser.id]);
 
   useEffect(() => {
+       if (!currentUser || !currentUser.id || sessionStarted) return;
+
+    const startSession = async () => {
+      try {
+        const response = await api.post(
+          "/analytics/session",
+          {
+            userId: currentUser.id,
+            tenantId: currentUser.tenantId || "default",
+            customerData: {
+              name: currentUser.name || "Anonymous",
+              email: currentUser.email || "",
+            },
+          }
+        );
+        
+        if (response.data?.sessionId) {
+          setSessionId(response.data.sessionId);
+          setSessionStarted(true);
+        }
+      } catch (error) {
+        console.error('Error starting session:', error);
+      }
+    };
+
+    startSession();
     if (conversationMode === "group") {
       if (!selectedGroup) {
         setMessages([]);
@@ -221,7 +249,7 @@ function Chat({ currentUser, socket }) {
     if (!mediaUrl) return "";
     return mediaUrl.startsWith("http")
       ? mediaUrl
-      : `${SERVER_ORIGIN}${mediaUrl}`;
+      : `${getActiveServerOrigin()}${mediaUrl}`;
   };
 
   const formatTime = (date) =>
@@ -247,6 +275,24 @@ function Chat({ currentUser, socket }) {
         response.data.message,
       ]);
       setMessage("");
+       if (sessionId && text) {
+        try {
+          await api.post(
+            "/analytics/message",
+            {
+              sessionId,
+              messageData: {
+                sender: "user",
+                text: text.trim()
+              },
+            }
+          );
+        } catch (analyticsError) {
+          console.error('Analytics error:', analyticsError);
+        }
+      }
+
+      
     } catch (requestError) {
       setError(
         requestError.response?.data?.message || "Message could not be sent."
@@ -288,6 +334,29 @@ function Chat({ currentUser, socket }) {
       setAiAnalysis(null);
     } finally {
       setIsLoadingAi(false);
+    }
+  };
+
+  const resetAiPanel = () => {
+    setAiSuggestions([]);
+    setAiError("");
+    setAiAnalysis(null);
+    setPredictedReplies([]);
+    setUserPatterns(null);
+    setContextualInsight(null);
+  };
+
+  const toggleAiPanel = async () => {
+    if (showAiPanel) {
+      setShowAiPanel(false);
+      resetAiPanel();
+      return;
+    }
+
+    setShowAiPanel(true);
+    await requestAiSuggestions();
+    if (messages.length > 0) {
+      requestPredictiveSuggestions();
     }
   };
 
@@ -656,13 +725,22 @@ function Chat({ currentUser, socket }) {
                 <button
                   type="button"
                   className="sidebar-ai-button"
-                  onClick={requestAiSuggestions}
-                  disabled={!selectedUser || isLoadingAi}
+                  onClick={toggleAiPanel}
+                  disabled={!selectedUser}
                 >
-                  {isLoadingAi ? "Generating..." : "RBT-AI"}
+                  {isLoadingAi ? "Generating..." : showAiPanel ? "Close RBT-AI" : "RBT-AI"}
                 </button>
-                {aiError && <p className="sidebar-ai-error">{aiError}</p>}
-                {aiSuggestions.length > 0 && (
+
+                <button
+                  type="button"
+                  className="sidebar-status-button"
+                  onClick={() => setShowAiPanel(false)}
+                >
+                  Status
+                </button>
+
+                {showAiPanel && aiError && <p className="sidebar-ai-error">{aiError}</p>}
+                {showAiPanel && aiSuggestions.length > 0 && (
                   <div className="sidebar-ai-suggestions">
                     <h4>RBT-AI Suggestions</h4>
                     {aiAnalysis && (
@@ -695,7 +773,7 @@ function Chat({ currentUser, socket }) {
                   </div>
                 )}
 
-                {predictedReplies.length > 0 && (
+                {showAiPanel && predictedReplies.length > 0 && (
                   <div className="sidebar-ai-suggestions predictive-panel">
                     <h4>🔮 Predicted Replies</h4>
                     {contextualInsight && (

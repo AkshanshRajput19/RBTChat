@@ -14,8 +14,18 @@ function Users({ currentUser }) {
       setError("");
       const response = await api.get("/users");
       setUsers(response.data.users || []);
-    } catch {
-      setError("Users could not be loaded. Please check that the server is running.");
+    } catch (error) {
+      if (error.response?.status === 401) {
+        setError("Your session has expired. Please log in again.");
+      } else if (!error.response) {
+        setError(
+          "Users could not be loaded because the backend could not be reached."
+        );
+      } else {
+        setError(
+          error.response?.data?.message || "Users could not be loaded right now."
+        );
+      }
     } finally {
       setIsLoading(false);
     }

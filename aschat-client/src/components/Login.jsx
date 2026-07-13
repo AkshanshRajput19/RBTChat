@@ -63,7 +63,7 @@ function Login({ setShowLogin, onAuth }) {
   return (
     <div className="container">
       <div className="login-box">
-        <h2>Login</h2>
+        <h2>Login...</h2>
 
         <input
           type="email"

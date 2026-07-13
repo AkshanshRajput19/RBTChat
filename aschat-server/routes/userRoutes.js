@@ -10,7 +10,7 @@ const Tenant = require("../models/Tenant");
 const router = express.Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const loginAttempts = new Map();
-const otpLoginEnabled = process.env.OTP_LOGIN_ENABLED !== "false";
+const otpLoginEnabled = process.env.OTP_LOGIN_ENABLED === "true";
 
 const createOtp = () => String(Math.floor(100000 + Math.random() * 900000));
 const getClientKey = (req) => {
@@ -369,12 +369,38 @@ router.post("/2fa/enable", authMiddleware, async (req, res) => {
 });
 
 router.get("/users", authMiddleware, async (req, res) => {
-    const users = await User.find({ tenantId: req.tenantId }).select("name email role tenantId");
+    try {
+        const tenantId = String(req.tenantId || "").trim() || "default";
 
-    res.json({
-        success: true,
-        users: users
-    });
+        let users = await User.find({
+            $or: [
+                { tenantId },
+                { tenantId: "default" },
+                { tenantId: { $exists: false } },
+                { tenantId: null }
+            ]
+        })
+            .find({ _id: { $ne: req.userId } })
+            .select("name email role tenantId")
+            .sort({ name: 1 });
+
+        if (!users.length) {
+            users = await User.find({ _id: { $ne: req.userId } })
+                .select("name email role tenantId")
+                .sort({ name: 1 });
+        }
+
+        res.json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        console.error("List users error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Unable to load users right now."
+        });
+    }
 });
 
 module.exports = router;

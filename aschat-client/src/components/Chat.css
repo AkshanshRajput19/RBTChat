@@ -24,12 +24,14 @@ button {
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: var(--contacts-panel-width);
-  min-width: 260px;
-  max-width: 420px;
+  width: var(--contacts-panel-width, clamp(280px, 30vw, 380px));
+  min-width: 280px;
+  max-width: 380px;
+  flex: 0 0 var(--contacts-panel-width, clamp(280px, 30vw, 380px));
   padding: 0;
   background: #11131b;
   border-right: 1px solid #292d3a;
+  overflow: hidden;
 }
 
 .brand-header {
@@ -322,6 +324,32 @@ button {
 
 .sidebar-ai-button:hover:not(:disabled) {
   background: #6d28d9;
+}
+
+.sidebar-status-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  color: #f8fafc;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 12px 30px rgba(31, 41, 55, 0.25);
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.sidebar-status-button:hover {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: rgba(124, 58, 237, 0.45);
+  transform: translateY(-1px);
+}
+
+.sidebar-status-button:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.75);
+  outline-offset: 2px;
 }
 
 .sidebar-ai-button:disabled {
@@ -1208,6 +1236,118 @@ button {
   background: #7f1d1d70;
   border-radius: 9px;
   font-size: 13px;
+}
+
+.call-ai-assistant {
+  margin: 0 20px 12px;
+  padding: 14px;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  border: 1px solid #374151;
+  border-radius: 16px;
+}
+
+.call-ai-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.call-ai-header strong {
+  display: block;
+  font-size: 14px;
+  color: #f8fafc;
+}
+
+.call-ai-header p {
+  margin: 4px 0 0;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.call-ai-toggle {
+  padding: 8px 12px;
+  color: #f8fafc;
+  background: #312e81;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.call-ai-toggle.active {
+  background: #b91c1c;
+}
+
+.call-ai-guide {
+  margin-top: 10px;
+  padding: 9px 11px;
+  color: #d1d5db;
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.call-ai-guide ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.call-ai-language {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.call-ai-language select {
+  padding: 7px 10px;
+  color: #f8fafc;
+  background: #111827;
+  border: 1px solid #4b5563;
+  border-radius: 8px;
+}
+
+.call-ai-card {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+}
+
+.call-ai-card-title {
+  margin-bottom: 6px;
+  color: #8b5cf6;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.call-ai-card p {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 13px;
+}
+
+.call-ai-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.call-ai-status {
+  margin-top: 10px;
+  color: #60a5fa;
+  font-size: 12px;
 }
 
 .incoming-call-actions,

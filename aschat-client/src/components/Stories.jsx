@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import api from "../api";
+import api, { getActiveServerOrigin } from "../api";
 
 const FILTERS = ["neon", "sunset", "ocean", "sepia"];
 
@@ -73,7 +73,7 @@ function Stories({ currentUser }) {
       <div className="story-list">
         {stories.map((story) => (
           <div className={`story-card ${story.filter || "neon"}`} key={story._id}>
-            <img src={`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}${story.imageUrl}`} alt="story" />
+            <img src={`${getActiveServerOrigin()}${story.imageUrl}`} alt="story" />
             <div className="story-overlay">
               <strong>{currentUser.name}</strong>
               <span>{story.caption || "Shared a moment"}</span>

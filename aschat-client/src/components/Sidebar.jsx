@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./DashboardLayout.css";
 
 function DashboardIcon() {
@@ -7,6 +8,80 @@ function DashboardIcon() {
       <rect x="14" y="3" width="7" height="7" rx="2" />
       <rect x="3" y="14" width="7" height="7" rx="2" />
       <rect x="14" y="14" width="7" height="7" rx="2" />
+    </svg>
+  );
+}
+
+function SubscriptionIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+  );
+}
+
+function AllSubscriptionsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 6h14M5 12h14M5 18h10" />
+    </svg>
+  );
+}
+
+function PendingRequestsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 8v4l2 2M4 12a8 8 0 1 1 8 8" />
+    </svg>
+  );
+}
+
+function PlansIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 7h16v4H4zM4 13h16v4H4z" />
+    </svg>
+  );
+}
+
+function AddPlanIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+function PwaIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 18V6h14v12H5zM9 8h6M9 12h6" />
+    </svg>
+  );
+}
+
+function PaymentHistoryIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 7h16M4 12h10M4 17h16M20 4v16" />
+    </svg>
+  );
+}
+
+function SettingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 8.6 15a1.65 1.65 0 0 0-1.82-.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 15 8.6a1.65 1.65 0 0 0 1.82.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
+    </svg>
+  );
+}
+
+function CustomDomainIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 12a8 8 0 0 1 16 0 8 8 0 0 1-16 0z" />
+      <path d="M2 12h20M12 2a16 16 0 0 1 0 20M12 2a16 16 0 0 0 0 20" />
     </svg>
   );
 }
@@ -27,14 +102,6 @@ function UsersIcon() {
   );
 }
 
-function StoriesIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 7h16M7 4v4M17 4v4M6 20h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2Z" />
-    </svg>
-  );
-}
-
 function LogoutIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -46,6 +113,34 @@ function LogoutIcon() {
 function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
   const navigate = (page) => {
     onNavigate(page);
+  };
+
+  const [showSubscriptionMenu, setShowSubscriptionMenu] = useState(false);
+  const subscriptionPages = [
+    "subscription",
+    "allSubscriptions",
+    "pendingRequests",
+    "plans",
+    "addPlan",
+    "pwaSettings",
+    "paymentHistory",
+    "setting",
+    "customDomain",
+  ];
+
+  useEffect(() => {
+    if (!subscriptionPages.includes(activePage)) {
+      setShowSubscriptionMenu(false);
+    }
+  }, [activePage]);
+
+  const handleSubscriptionToggle = () => {
+    if (showSubscriptionMenu) {
+      setShowSubscriptionMenu(false);
+      return;
+    }
+    setShowSubscriptionMenu(true);
+    navigate("subscription");
   };
 
   return (
@@ -76,6 +171,76 @@ function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
             <span>Dashboard</span>
           </button>
 
+          <div className="sidebar-section">
+            <button
+              className={activePage === "subscription" ? "active" : ""}
+              onClick={handleSubscriptionToggle}
+            >
+              <SubscriptionIcon />
+              <span>Subscription Management</span>
+            </button>
+            {showSubscriptionMenu && (
+              <div className="sidebar-submenu">
+                <button
+                  className={activePage === "allSubscriptions" ? "active" : ""}
+                  onClick={() => navigate("allSubscriptions")}
+                >
+                  <AllSubscriptionsIcon />
+                  <span>All Subscriptions</span>
+                </button>
+                <button
+                  className={activePage === "pendingRequests" ? "active" : ""}
+                  onClick={() => navigate("pendingRequests")}
+                >
+                  <PendingRequestsIcon />
+                  <span>Pending Requests</span>
+                </button>
+                <button
+                  className={activePage === "plans" ? "active" : ""}
+                  onClick={() => navigate("plans")}
+                >
+                  <PlansIcon />
+                  <span>Plans / Packages</span>
+                </button>
+                <button
+                  className={activePage === "addPlan" ? "active" : ""}
+                  onClick={() => navigate("addPlan")}
+                >
+                  <AddPlanIcon />
+                  <span>Add Plan</span>
+                </button>
+                <button
+                  className={activePage === "pwaSettings" ? "active" : ""}
+                  onClick={() => navigate("pwaSettings")}
+                >
+                  <PwaIcon />
+                  <span>PWA Settings</span>
+                </button>
+                <button
+                  className={activePage === "paymentHistory" ? "active" : ""}
+                  onClick={() => navigate("paymentHistory")}
+                >
+                  <PaymentHistoryIcon />
+                  <span>Payment History</span>
+                </button>
+                <button
+                  className={activePage === "setting" ? "active" : ""}
+                  onClick={() => navigate("setting")}
+                >
+                  <SettingIcon />
+                  <span>Setting</span>
+                </button>
+                <button
+                  className={activePage === "customDomain" ? "active" : ""}
+                  onClick={() => navigate("customDomain")}
+                >
+                  <CustomDomainIcon />
+                  <span>Custom Domain</span>
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             className={activePage === "chats" ? "active" : ""}
             onClick={() => navigate("chats")}
@@ -90,14 +255,6 @@ function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
           >
             <UsersIcon />
             <span>Users</span>
-          </button>
-
-          <button
-            className={activePage === "stories" ? "active" : ""}
-            onClick={() => navigate("stories")}
-          >
-            <StoriesIcon />
-            <span>Stories</span>
           </button>
         </nav>
 

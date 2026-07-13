@@ -4,9 +4,9 @@ import Register from "./components/Register";
 import Chat from "./components/Chat";
 import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
-import Stories from "./components/Stories";
 import Sidebar from "./components/Sidebar";
 import Users from "./components/Users";
+import api from "./api";
 import { connectSocket, disconnectSocket } from "./socket";
 import "./components/DashboardLayout.css";
 
@@ -25,6 +25,14 @@ function App() {
   });
   const [socket, setSocket] = useState(null);
 
+  const resetSessionState = () => {
+    localStorage.removeItem("rbtchatSession");
+    setSession(null);
+    setShowLogin(true);
+    setActivePage("dashboard");
+    setIsSidebarOpen(window.innerWidth > 900);
+  };
+
   useEffect(() => {
     if (!session?.token) {
       disconnectSocket();
@@ -40,6 +48,20 @@ function App() {
     };
   }, [session?.token]);
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      disconnectSocket();
+      setSocket(null);
+      resetSessionState();
+    };
+
+    window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+
+    return () => {
+      window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+    };
+  }, []);
+
   const handleAuth = (authData) => {
     const nextSession = {
       token: authData.token,
@@ -51,11 +73,9 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("rbtchatSession");
-    setSession(null);
-    setShowLogin(true);
-    setActivePage("dashboard");
-    setIsSidebarOpen(true);
+    disconnectSocket();
+    setSocket(null);
+    resetSessionState();
   };
 
   if (session) {
@@ -83,8 +103,6 @@ function App() {
                 currentUser={session.user}
                 onOpenChats={() => setActivePage("chats")}
               />
-            ) : activePage === "stories" ? (
-              <Stories currentUser={session.user} />
             ) : activePage === "users" ? (
               <Users currentUser={session.user} />
             ) : (

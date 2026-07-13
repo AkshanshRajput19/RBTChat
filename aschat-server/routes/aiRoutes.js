@@ -1,26 +1,25 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware");
 const Message = require("../models/Message");
+const {
+  PHASE_2_STEPS,
+  analyzeUserPatterns: analyzeRbtUserPatterns,
+  generateContextualReplies: generateRbtAiSuggestions,
+  predictReplies: predictRbtAiReplies
+} = require("../services/rbtAiEngine");
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
-// SENTIMENT ANALYSIS - detect emotional tone
-const analyzeSentiment = (text) => {
-  const text_lower = text.toLowerCase();
-  
-  const positiveWords = ["great", "amazing", "awesome", "love", "happy", "excellent", "good", "wonderful", "nice", "thanks", "thank you"];
-  const negativeWords = ["hate", "bad", "awful", "terrible", "sad", "angry", "frustrated", "disappointed", "wrong", "problem", "issue", "help"];
-  const neutralWords = ["ok", "fine", "alright", "sure", "yeah", "nope"];
-  
-  let positiveCount = positiveWords.filter(word => text_lower.includes(word)).length;
-  let negativeCount = negativeWords.filter(word => text_lower.includes(word)).length;
-  
-  if (positiveCount > negativeCount) return "positive";
-  if (negativeCount > positiveCount) return "negative";
-  return "neutral";
-};
+router.get("/phase2", (req, res) => {
+  return res.json({
+    success: true,
+    title: "RBT-AI Phase 2",
+    subtitle: "AI Chat Flow, Sentiment Analysis, Predictive Messaging, and Call Assistant",
+    steps: PHASE_2_STEPS
+  });
+});
 
 // WRITING PATTERN ANALYSIS - extract user's communication style
 const analyzeUserPatterns = (userMessages) => {
@@ -227,25 +226,13 @@ router.post("/suggestions", async (req, res) => {
       });
     }
 
-    // Get the last message to analyze
-    const lastMessage = context.length > 0 ? context[context.length - 1].text : "";
-    
-    // Sentiment Analysis For Personalized Responses
-    const sentiment = analyzeSentiment(lastMessage);
-
-    // AI Chat Flow Engine - contextual analysis
-    const suggestions = generateContextualReplies(context, sentiment, currentUserName, targetUserName);
-
-    return res.json({
-      success: true,
-      suggestions,
-      sentiment,
-      chatFlowAnalysis: {
-        conversationLength: context.length,
-        detectedSentiment: sentiment,
-        respondingTo: lastMessage.substring(0, 50)
-      }
+    const aiResponse = generateRbtAiSuggestions({
+      currentUserName,
+      targetUserName,
+      context,
     });
+
+    return res.json(aiResponse);
   } catch (error) {
     console.error("AI suggestions error:", error);
     return res.status(500).json({
@@ -258,7 +245,7 @@ router.post("/suggestions", async (req, res) => {
 // PHASE 3: PREDICTIVE MESSAGING - Anticipate needs before user types
 router.post("/predictive", async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const targetUserId = String(req.body.targetUserId || "").trim();
 
     if (!targetUserId) {
@@ -268,7 +255,6 @@ router.post("/predictive", async (req, res) => {
       });
     }
 
-    // Fetch recent user messages for pattern analysis
     const userMessages = await Message.find({
       sender: userId,
       receiver: targetUserId,
@@ -278,7 +264,6 @@ router.post("/predictive", async (req, res) => {
       .limit(50)
       .select("text");
 
-    // Fetch the last message from the target user
     const lastRecipientMessage = await Message.findOne({
       sender: targetUserId,
       receiver: userId,
@@ -287,31 +272,25 @@ router.post("/predictive", async (req, res) => {
       .sort({ createdAt: -1 })
       .select("text");
 
-    // Analyze user's writing patterns
-    const userPatterns = analyzeUserPatterns(userMessages.map(m => ({ text: m.text })));
-
-    // Determine sentiment of recipient's last message
     const recipientLastText = lastRecipientMessage?.text || "";
-    const sentiment = analyzeSentiment(recipientLastText);
-
-    // Generate predictive suggestions
-    const predictedReplies = predictiveMessaging(
-      userMessages.map(m => ({ text: m.text })),
-      recipientLastText,
-      userPatterns,
-      sentiment
+    const userPatterns = analyzeRbtUserPatterns(
+      userMessages.map((message) => ({ text: message.text }))
     );
 
+    const aiResponse = predictRbtAiReplies({
+      userMessages: userMessages.map((message) => ({ text: message.text })),
+      lastRecipientMessage: recipientLastText,
+      userPatterns,
+    });
+
     return res.json({
-      success: true,
-      predictedReplies,
+      ...aiResponse,
       userPatterns,
       contextualInsight: {
-        lastRecipientMessage: recipientLastText.substring(0, 60),
-        detectedSentiment: sentiment,
+        ...(aiResponse.contextualInsight || {}),
         communicationStyle: userPatterns.formalTone ? "Formal" : "Casual",
-        recentMessageCount: userMessages.length
-      }
+        recentMessageCount: userMessages.length,
+      },
     });
   } catch (error) {
     console.error("Predictive messaging error:", error);
