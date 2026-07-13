@@ -7,7 +7,6 @@ function PaymentButton({ amount, planName }) {
         setLoading(true);
 
         try {
-            // Create order using deployed backend
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/payments/create-order`,
                 {
@@ -19,7 +18,15 @@ function PaymentButton({ amount, planName }) {
                 }
             );
 
+            if (!response.ok) {
+                throw new Error("Failed to create order");
+            }
+
             const order = await response.json();
+
+            if (!order.id) {
+                throw new Error(order.message || "Order creation failed");
+            }
 
             const options = {
                 key: "rzp_test_TCHYStjIcvKx19",
@@ -28,9 +35,12 @@ function PaymentButton({ amount, planName }) {
                 name: "RBTChat",
                 description: `${planName} Plan`,
                 order_id: order.id,
-                handler: function () {
+
+                handler: function (response) {
+                    console.log(response);
                     alert("✅ Payment Successful!");
                 },
+
                 theme: {
                     color: "#4f46e5",
                 },
@@ -38,9 +48,9 @@ function PaymentButton({ amount, planName }) {
 
             const rzp = new window.Razorpay(options);
             rzp.open();
-        } catch (error) {
-            console.error(error);
-            alert("❌ Payment failed. Try again.");
+        } catch (err) {
+            console.error("Payment Error:", err);
+            alert("❌ Payment failed. " + err.message);
         } finally {
             setLoading(false);
         }
@@ -52,7 +62,7 @@ function PaymentButton({ amount, planName }) {
             onClick={handlePayment}
             disabled={loading}
         >
-            {loading ? "⏳ Processing..." : "💰 Upgrade to " + planName}
+            {loading ? "⏳ Processing..." : `💰 Upgrade to ${planName}`}
         </button>
     );
 }
