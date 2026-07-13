@@ -6,7 +6,7 @@ import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Users from "./components/Users";
-import api from "./api";
+import api, { UNAUTHORIZED_EVENT } from "./api";
 import { connectSocket, disconnectSocket } from "./socket";
 import "./components/DashboardLayout.css";
 
