@@ -19,7 +19,13 @@ function AuthLayout({
       <div className="auth-orb auth-orb--left" aria-hidden="true" />
       <div className="auth-orb auth-orb--right" aria-hidden="true" />
       <div className="auth-landscape auth-landscape--far" aria-hidden="true" />
+      <div className="auth-waterfall-group" aria-hidden="true">
+        <div className="auth-waterfall auth-waterfall--primary" />
+        <div className="auth-waterfall auth-waterfall--secondary" />
+        <div className="auth-waterfall-spray" />
+      </div>
       <div className="auth-landscape auth-landscape--mid" aria-hidden="true" />
+      <div className="auth-river" aria-hidden="true" />
       <div className="auth-landscape auth-landscape--front" aria-hidden="true" />
 
       <header className="auth-header">

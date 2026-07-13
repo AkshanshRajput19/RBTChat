@@ -130,6 +130,136 @@
   );
 }
 
+.auth-waterfall-group {
+  position: absolute;
+  right: 19%;
+  bottom: 18vh;
+  width: 9rem;
+  height: 20rem;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.auth-waterfall {
+  position: absolute;
+  top: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 250, 244, 0.88) 0%,
+    rgba(209, 237, 255, 0.76) 38%,
+    rgba(134, 194, 246, 0.28) 76%,
+    rgba(134, 194, 246, 0.02) 100%
+  );
+  filter: blur(0.6px);
+  box-shadow:
+    0 0 18px rgba(210, 236, 255, 0.28),
+    0 0 32px rgba(120, 190, 255, 0.16);
+}
+
+.auth-waterfall--primary {
+  left: 55%;
+  width: 1rem;
+  height: 14rem;
+  clip-path: polygon(34% 0, 82% 0, 100% 16%, 84% 44%, 100% 100%, 24% 100%, 6% 68%, 0 18%);
+  transform: rotate(3deg);
+}
+
+.auth-waterfall--secondary {
+  top: 2.1rem;
+  left: 37%;
+  width: 0.62rem;
+  height: 9rem;
+  opacity: 0.72;
+  clip-path: polygon(25% 0, 100% 0, 76% 44%, 100% 100%, 18% 100%, 0 54%);
+  transform: rotate(-6deg);
+}
+
+.auth-waterfall-spray {
+  position: absolute;
+  left: 22%;
+  bottom: 2.85rem;
+  width: 5.5rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(221, 242, 255, 0.62) 0%,
+    rgba(179, 224, 255, 0.34) 42%,
+    transparent 76%
+  );
+  filter: blur(8px);
+}
+
+.auth-river {
+  position: absolute;
+  right: -4%;
+  bottom: 11.5vh;
+  width: min(48rem, 72vw);
+  height: 5.8rem;
+  pointer-events: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(146, 209, 255, 0.08) 0%,
+    rgba(224, 247, 255, 0.42) 18%,
+    rgba(129, 199, 255, 0.68) 40%,
+    rgba(219, 246, 255, 0.3) 64%,
+    rgba(109, 186, 255, 0.08) 100%
+  );
+  clip-path: polygon(
+    0 58%,
+    11% 48%,
+    24% 65%,
+    38% 43%,
+    51% 55%,
+    66% 33%,
+    82% 49%,
+    100% 38%,
+    100% 70%,
+    83% 90%,
+    65% 79%,
+    48% 92%,
+    26% 78%,
+    0 82%
+  );
+  opacity: 0.62;
+  filter: blur(1px);
+  transform: rotate(-3deg);
+}
+
+.auth-river::before,
+.auth-river::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.auth-river::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 28%,
+    rgba(255, 255, 255, 0.08) 48%,
+    transparent 70%
+  );
+  filter: blur(2px);
+}
+
+.auth-river::after {
+  inset: 18% 12% 30% 8%;
+  background: linear-gradient(
+    90deg,
+    rgba(237, 250, 255, 0.02) 0%,
+    rgba(237, 250, 255, 0.34) 30%,
+    rgba(237, 250, 255, 0.08) 56%,
+    rgba(237, 250, 255, 0.18) 100%
+  );
+  clip-path: polygon(0 56%, 18% 44%, 36% 60%, 57% 34%, 76% 52%, 100% 40%, 100% 68%, 78% 80%, 55% 66%, 34% 82%, 0 72%);
+  opacity: 0.86;
+}
+
 .auth-landscape--front {
   height: 24vh;
   background: linear-gradient(180deg, rgba(42, 13, 54, 0.2), var(--auth-mountain-front));
@@ -527,6 +657,28 @@
     width: 100%;
     justify-content: center;
   }
+
+  .auth-waterfall-group {
+    right: 12%;
+    bottom: 17vh;
+    width: 7rem;
+    height: 16rem;
+  }
+
+  .auth-waterfall--primary {
+    height: 11rem;
+  }
+
+  .auth-waterfall--secondary {
+    height: 7.2rem;
+  }
+
+  .auth-river {
+    right: -12%;
+    width: min(38rem, 84vw);
+    bottom: 12vh;
+    height: 4.8rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -577,6 +729,40 @@
 
   .auth-card h2 {
     font-size: 1.7rem;
+  }
+
+  .auth-waterfall-group {
+    right: 10%;
+    bottom: 14.5vh;
+    width: 5rem;
+    height: 12rem;
+    opacity: 0.72;
+  }
+
+  .auth-waterfall--primary {
+    width: 0.72rem;
+    height: 8rem;
+  }
+
+  .auth-waterfall--secondary {
+    top: 1.5rem;
+    width: 0.5rem;
+    height: 5rem;
+  }
+
+  .auth-waterfall-spray {
+    left: 14%;
+    width: 4rem;
+    height: 1.6rem;
+    bottom: 1.8rem;
+  }
+
+  .auth-river {
+    right: -22%;
+    bottom: 9.5vh;
+    width: min(30rem, 98vw);
+    height: 3.8rem;
+    opacity: 0.5;
   }
 
   .auth-landscape--far {
