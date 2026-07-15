@@ -4,6 +4,28 @@ import useWebRTCCall from "../hooks/useWebRTCCall";
 import CallOverlay from "./CallOverlay";
 import "./Chat.css";
 
+function PhoneCallIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.1.36 2.26.54 3.48.54a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.3 21 3 13.7 3 4.5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.22.18 2.38.54 3.48a1 1 0 0 1-.24 1z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function CameraIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M8 7 9.4 5.2A2 2 0 0 1 11 4.5h2a2 2 0 0 1 1.6.7L16 7h2a2.5 2.5 0 0 1 2.5 2.5v7A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5v-7A2.5 2.5 0 0 1 6 7zm4 2.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 1.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function Chat({ currentUser, socket }) {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -994,8 +1016,10 @@ function Chat({ currentUser, socket }) {
                   disabled={
                     !onlineUserIds.includes(selectedUser._id) || call.isActive
                   }
+                  aria-label="Start voice call"
+                  title="Start voice call"
                 >
-                  Voice
+                  <PhoneCallIcon />
                 </button>
                 <button
                   type="button"
@@ -1004,8 +1028,10 @@ function Chat({ currentUser, socket }) {
                   disabled={
                     !onlineUserIds.includes(selectedUser._id) || call.isActive
                   }
+                  aria-label="Start video call"
+                  title="Start video call"
                 >
-                  Video
+                  <CameraIcon />
                 </button>
               </div>
             </header>
