@@ -1,5 +1,13 @@
+const fs = require("fs");
 const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, ".env") });
+const dotenv = require("dotenv");
+
+[".env.local", ".env"].forEach((fileName) => {
+  const filePath = path.join(__dirname, fileName);
+  if (fs.existsSync(filePath)) {
+    dotenv.config({ path: filePath });
+  }
+});
 const express = require("express");
 const cors = require("cors");
 const http = require("http");

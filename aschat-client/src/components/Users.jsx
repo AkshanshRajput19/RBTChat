@@ -101,7 +101,11 @@ function Users({ currentUser }) {
 
       {!error && !isLoading && filteredUsers.length === 0 && (
         <div className="users-state">
-          <p>{search ? "No user matches your search." : "No users found."}</p>
+          <p>
+            {search
+              ? "No user matches your search."
+              : "No other users found in this environment yet. Create a second local account to start chatting."}
+          </p>
         </div>
       )}
 

@@ -6,9 +6,20 @@ import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Users from "./components/Users";
-import api, { UNAUTHORIZED_EVENT } from "./api";
+import { UNAUTHORIZED_EVENT } from "./api";
 import { connectSocket, disconnectSocket } from "./socket";
 import "./components/DashboardLayout.css";
+
+const THEME_STORAGE_KEY = "rbtchatTheme";
+
+const getInitialTheme = () => {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+};
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
@@ -16,6 +27,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.innerWidth > 900
   );
+  const [theme, setTheme] = useState(getInitialTheme);
   const [session, setSession] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("rbtchatSession"));
@@ -32,6 +44,12 @@ function App() {
     setActivePage("dashboard");
     setIsSidebarOpen(window.innerWidth > 900);
   };
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!session?.token) {
@@ -95,6 +113,8 @@ function App() {
             page={activePage}
             isSidebarOpen={isSidebarOpen}
             onMenuClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
+            theme={theme}
+            onThemeChange={setTheme}
           />
 
           <div className="dashboard-content">

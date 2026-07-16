@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import api from "../api";
+import api, { getActiveServerOrigin } from "../api";
 import useWebRTCCall from "../hooks/useWebRTCCall";
 import CallOverlay from "./CallOverlay";
+import {
+  emojiCategories,
+  gifOptions,
+  gifOptionsById,
+  stickerOptions,
+  stickerOptionsById,
+} from "./chatComposerAssets";
 import "./Chat.css";
 
 function PhoneCallIcon() {
@@ -23,6 +30,192 @@ function CameraIcon() {
         fill="currentColor"
       />
     </svg>
+  );
+}
+
+function MicrophoneIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M12 15.8a3.8 3.8 0 0 0 3.8-3.8V7.8a3.8 3.8 0 1 0-7.6 0V12a3.8 3.8 0 0 0 3.8 3.8m-6-3.9a1 1 0 1 1 2 0 4 4 0 1 0 8 0 1 1 0 1 1 2 0 6 6 0 0 1-5 5.9V21h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.1a6 6 0 0 1-5-5.9"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ComposerHubIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect
+        x="3.5"
+        y="3.5"
+        width="17"
+        height="17"
+        rx="5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <circle cx="10.5" cy="10.5" r="3.3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="9.2" cy="9.7" r="0.6" fill="currentColor" />
+      <circle cx="11.8" cy="9.7" r="0.6" fill="currentColor" />
+      <path
+        d="M9.2 11.8c.55.7 1.15 1 1.95 1s1.4-.3 1.95-1"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.4"
+      />
+      <path
+        d="M16.5 5.7v4.2M14.4 7.8h4.2"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.6"
+      />
+    </svg>
+  );
+}
+
+function ImageIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="9" cy="10" r="1.4" fill="currentColor" />
+      <path
+        d="m6.8 16 3.7-3.8a1.3 1.3 0 0 1 1.84-.02L15 14.6l1.6-1.6a1.3 1.3 0 0 1 1.83 0L20 14.5"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
+function DocumentIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M8 3.5h6.8L19 7.7V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 7 19V5A1.5 1.5 0 0 1 8.5 3.5Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path d="M14.8 3.8V8h4.1" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.8" />
+      <path d="M9.5 12h5M9.5 15h5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function LocationIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M12 20.4s6-5.3 6-10.1a6 6 0 1 0-12 0c0 4.8 6 10.1 6 10.1Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <circle cx="12" cy="10.1" r="2.2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
+function SparklesIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 3.8 13.5 8l4.2 1.5-4.2 1.5L12 15.2 10.5 11 6.3 9.5 10.5 8 12 3.8Z" fill="currentColor" />
+      <path d="m18.8 13.8.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8.8-2.1Z" fill="currentColor" />
+      <path d="m5.5 14 .7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function StickerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M7.5 4.5h8A4 4 0 0 1 19.5 8v5.5a6 6 0 0 1-6 6h-6A3.5 3.5 0 0 1 4 16V8A3.5 3.5 0 0 1 7.5 4.5Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path d="M14.5 15.5a3.2 3.2 0 0 0 3.2-3.2v3.2Z" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="9.4" cy="10.2" r="0.7" fill="currentColor" />
+      <circle cx="13.1" cy="10.2" r="0.7" fill="currentColor" />
+      <path d="M9.1 12.8c.9.8 1.7 1.1 2.8 1.1 1.1 0 1.9-.3 2.8-1.1" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+function GifIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="5" width="17" height="14" rx="3" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M7.2 11.7h2.4v2.6H7.2a1.8 1.8 0 1 1 0-3.6h2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+      <path d="M12 10.1v4.2M12 10.1h2.9M12 12.2h2.1" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+      <path d="M17.4 10.1v4.2M17.4 12.1h2.2" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function StickerMessageCard({ asset }) {
+  return (
+    <div
+      className="sticker-message-card"
+      style={{
+        "--asset-accent": asset.accent,
+        "--asset-surface": asset.surface,
+        "--asset-secondary": asset.secondary,
+      }}
+    >
+      <span className="sticker-message-emoji">{asset.emoji}</span>
+      <strong>{asset.label}</strong>
+      <span>{asset.caption}</span>
+    </div>
+  );
+}
+
+function GifMessageCard({ asset }) {
+  return (
+    <div
+      className={`gif-message-card motion-${asset.motion}`}
+      style={{
+        "--asset-accent": asset.accent,
+        "--asset-surface": asset.surface,
+        "--asset-secondary": asset.secondary,
+      }}
+    >
+      <span className="gif-message-badge">GIF</span>
+      <span className="gif-message-emoji">{asset.emoji}</span>
+      <strong>{asset.label}</strong>
+      <span>{asset.caption}</span>
+      <i className="gif-orb orb-one" />
+      <i className="gif-orb orb-two" />
+      <i className="gif-orb orb-three" />
+    </div>
   );
 }
 
@@ -1198,8 +1391,15 @@ function Chat({ currentUser, socket }) {
                   <button type="button" onClick={handleShareLocation}>
                     Location
                   </button>
-                  <button type="button" onClick={startVoiceRecording}>
-                    Record voice message
+                  <button
+                    type="button"
+                    className="attach-menu-record-button"
+                    onClick={startVoiceRecording}
+                    disabled={isRecording || isUploading}
+                    aria-label="Start voice recording"
+                    title="Start voice recording"
+                  >
+                    <MicrophoneIcon />
                   </button>
                 </div>
               </div>
@@ -1253,10 +1453,14 @@ function Chat({ currentUser, socket }) {
                   isRecording ? stopVoiceRecording : startVoiceRecording
                 }
                 disabled={isUploading}
+                aria-label={
+                  isRecording ? "Stop voice recording" : "Start voice recording"
+                }
+                title={
+                  isRecording ? "Stop voice recording" : "Start voice recording"
+                }
               >
-                {isRecording
-                  ? `Stop ${formatRecordingTime(recordingSeconds)}`
-                  : "Voice"}
+                {isRecording ? <StopIcon /> : <MicrophoneIcon />}
               </button>
 
               <button

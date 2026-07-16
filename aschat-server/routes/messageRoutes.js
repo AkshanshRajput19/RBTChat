@@ -123,6 +123,7 @@ router.post("/", async (req, res) => {
     const receiver = String(req.body.receiver || "");
     const text = String(req.body.text || "").trim();
     const messageType = String(req.body.type || "text");
+    const validAssetIdPattern = /^[a-z0-9-]{2,80}$/i;
 
     if (!mongoose.isValidObjectId(receiver)) {
       return res.status(400).json({
@@ -131,14 +132,21 @@ router.post("/", async (req, res) => {
       });
     }
 
-    if (!text || text.length > 2000) {
+    if (["text", "location"].includes(messageType) && (!text || text.length > 2000)) {
       return res.status(400).json({
         success: false,
         message: "Message must be between 1 and 2000 characters."
       });
     }
 
-    if (!['text', 'location'].includes(messageType)) {
+    if (["gif", "sticker"].includes(messageType) && !validAssetIdPattern.test(text)) {
+      return res.status(400).json({
+        success: false,
+        message: `Choose a valid ${messageType} to share.`
+      });
+    }
+
+    if (!['text', 'location', 'sticker', 'gif'].includes(messageType)) {
       return res.status(400).json({
         success: false,
         message: "Invalid message type."

@@ -31,7 +31,7 @@ const messageSchema = new mongoose.Schema({
 
   type: {
     type: String,
-    enum: ["text", "voice", "video", "image", "document", "location"],
+    enum: ["text", "voice", "video", "image", "document", "location", "sticker", "gif"],
     default: "text",
     required: true
   },
@@ -41,7 +41,7 @@ const messageSchema = new mongoose.Schema({
     trim: true,
     maxlength: 2000,
     required: function requireText() {
-      return this.type === "text" || this.type === "location";
+      return ["text", "location", "sticker", "gif"].includes(this.type);
     }
   },
 

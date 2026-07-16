@@ -957,6 +957,17 @@ button {
   border-color: #6d5bd0;
 }
 
+.attach-menu-record-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attach-menu-record-button svg {
+  width: 18px;
+  height: 18px;
+}
+
 .message-input input {
   min-width: 0;
   flex: 1;
@@ -1288,6 +1299,158 @@ button {
   font-weight: 700;
 }
 
+:root[data-theme="light"] .chat-container {
+  color: var(--app-text);
+  background: var(--app-bg);
+}
+
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .sidebar-bottom-panel,
+:root[data-theme="light"] .sidebar-menu-dropdown,
+:root[data-theme="light"] .sidebar-ai-suggestions,
+:root[data-theme="light"] .attach-menu,
+:root[data-theme="light"] .chat-area {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .brand-header,
+:root[data-theme="light"] .chat-header,
+:root[data-theme="light"] .message-input,
+:root[data-theme="light"] .sidebar-top-section {
+  background: var(--app-panel);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .ai-logo-section,
+:root[data-theme="light"] .search-container,
+:root[data-theme="light"] .group-creator input,
+:root[data-theme="light"] .group-creator select,
+:root[data-theme="light"] .group-admin-panel input,
+:root[data-theme="light"] .conversation-mode-switch button,
+:root[data-theme="light"] .group-member-item,
+:root[data-theme="light"] .message-input input,
+:root[data-theme="light"] .delete-menu,
+:root[data-theme="light"] .delete-menu button,
+:root[data-theme="light"] .sidebar-ai-suggestion,
+:root[data-theme="light"] .attach-menu button {
+  background: var(--app-panel-muted);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .brand-details p,
+:root[data-theme="light"] .ai-logo-section p,
+:root[data-theme="light"] .search-container span,
+:root[data-theme="light"] .conversation-heading time,
+:root[data-theme="light"] .conversation-details > p,
+:root[data-theme="light"] .empty-users,
+:root[data-theme="light"] .chat-loading,
+:root[data-theme="light"] .welcome-screen,
+:root[data-theme="light"] .empty-chat,
+:root[data-theme="light"] .call-information p,
+:root[data-theme="light"] .call-ai-header p,
+:root[data-theme="light"] .message-time,
+:root[data-theme="light"] .deleted-message,
+:root[data-theme="light"] .ai-flow-info {
+  color: var(--app-text-muted);
+}
+
+:root[data-theme="light"] .icon-button,
+:root[data-theme="light"] .tab-button,
+:root[data-theme="light"] .chat-filters button {
+  color: var(--app-text-secondary);
+  background: var(--app-surface);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .icon-button:hover,
+:root[data-theme="light"] .conversation-card:hover,
+:root[data-theme="light"] .input-icon:hover,
+:root[data-theme="light"] .sidebar-menu-dropdown button:hover,
+:root[data-theme="light"] .attach-menu button:hover,
+:root[data-theme="light"] .sidebar-ai-suggestion:hover {
+  background: var(--app-panel-hover);
+}
+
+:root[data-theme="light"] .conversation-card.selected {
+  background: #e9eef8;
+}
+
+:root[data-theme="light"] .search-container input,
+:root[data-theme="light"] .message-input input,
+:root[data-theme="light"] .group-creator input,
+:root[data-theme="light"] .group-creator select,
+:root[data-theme="light"] .group-admin-panel input {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .search-container input::placeholder,
+:root[data-theme="light"] .message-input input::placeholder {
+  color: var(--app-text-muted);
+}
+
+:root[data-theme="light"] .conversation-card,
+:root[data-theme="light"] .sidebar-menu-dropdown button,
+:root[data-theme="light"] .sidebar-ai-suggestion,
+:root[data-theme="light"] .attach-menu button,
+:root[data-theme="light"] .delete-menu button,
+:root[data-theme="light"] .selected-user-details h2,
+:root[data-theme="light"] .empty-chat h2,
+:root[data-theme="light"] .welcome-screen h1,
+:root[data-theme="light"] .conversation-heading h3,
+:root[data-theme="light"] .sidebar-title h2 {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .online-dot {
+  border-color: var(--app-surface);
+}
+
+:root[data-theme="light"] .selected-user-details p {
+  color: var(--app-success);
+}
+
+:root[data-theme="light"] .messages {
+  background-color: #f5f8fc;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12) 0 2px, transparent 3px),
+    radial-gradient(circle at 80% 40%, rgba(37, 99, 235, 0.1) 0 2px, transparent 3px);
+}
+
+:root[data-theme="light"] .encryption-notice {
+  color: var(--app-accent);
+  background: #eef2ff;
+}
+
+:root[data-theme="light"] .message-bubble {
+  color: var(--app-text);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(148, 163, 184, 0.2);
+}
+
+:root[data-theme="light"] .message-row.mine .message-bubble {
+  color: #fff;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+}
+
+:root[data-theme="light"] .message-action-button,
+:root[data-theme="light"] .input-icon {
+  color: var(--app-text-secondary);
+}
+
+:root[data-theme="light"] .message-time span {
+  color: #2563eb;
+}
+
+:root[data-theme="light"] .empty-users p {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .chat-request-error {
+  color: var(--app-danger);
+  background: var(--app-danger-bg);
+}
+
 .call-ai-toggle.active {
   background: #b91c1c;
 }
@@ -1434,23 +1597,35 @@ button {
 }
 
 .voice-record-button {
-  min-width: 66px;
+  width: 42px;
   height: 42px;
-  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   color: #ede9fe;
   background: #312e81;
   border: 1px solid #6d5bd0;
   border-radius: 18px;
-  font-size: 12px;
-  font-weight: 800;
+  transition: background 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.voice-record-button svg {
+  width: 18px;
+  height: 18px;
 }
 
 .voice-record-button.recording {
-  min-width: 90px;
+  width: 42px;
   color: white;
   background: #b91c1c;
   border-color: #ef4444;
   animation: recording-pulse 1.2s infinite;
+}
+
+.voice-record-button:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .voice-record-button:disabled {

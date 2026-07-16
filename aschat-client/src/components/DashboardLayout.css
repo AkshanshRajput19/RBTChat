@@ -269,6 +269,100 @@
   font-weight: 800;
 }
 
+.dashboard-user-menu {
+  position: relative;
+}
+
+.dashboard-user-trigger {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+}
+
+.dashboard-user-trigger:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 3px;
+}
+
+.dashboard-user-trigger.open .dashboard-user-avatar {
+  box-shadow: 0 0 0 3px #818cf840;
+}
+
+.dashboard-user-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 190px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  box-shadow: var(--app-shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  z-index: 20;
+}
+
+.dashboard-user-dropdown.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.dashboard-user-dropdown-label {
+  margin: 0 0 2px;
+  color: var(--app-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--app-text-secondary);
+  background: var(--app-panel);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  text-align: left;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.dashboard-theme-option svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.dashboard-theme-option:hover {
+  color: var(--app-text);
+  background: var(--app-panel-hover);
+}
+
+.dashboard-theme-option.active {
+  color: #fff;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  border-color: #5b57dd;
+}
+
 .mobile-menu-button {
   display: grid;
   width: 40px;
@@ -486,6 +580,103 @@
 .dashboard-info-card p {
   margin-top: 5px;
   font-size: 13px;
+}
+
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.dashboard-toolbar h1 {
+  margin: 0;
+  color: var(--app-text);
+  font-size: 28px;
+}
+
+.dashboard-timeframe-group,
+.dashboard-toolbar-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dashboard-toolbar-actions {
+  gap: 12px;
+}
+
+.dashboard-timeframe-button {
+  padding: 4px 12px;
+  color: var(--app-text-muted);
+  background: transparent;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.dashboard-timeframe-button.active {
+  color: #fff;
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+}
+
+.dashboard-analytics-loading {
+  padding: 40px;
+  color: var(--app-text-muted);
+  text-align: center;
+}
+
+.dashboard-inline-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  color: var(--app-text-secondary);
+}
+
+.dashboard-inline-panel {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--app-panel-muted);
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+}
+
+.dashboard-inline-panel h4 {
+  margin: 0 0 6px;
+  color: var(--app-accent);
+}
+
+.dashboard-inline-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--app-text-secondary);
+  font-size: 14px;
+}
+
+.dashboard-inline-accent {
+  color: var(--app-accent);
+}
+
+.dashboard-forecast-value,
+.dashboard-risk-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.dashboard-forecast-value {
+  color: #4ade80;
+}
+
+.dashboard-risk-value {
+  color: #f87171;
+}
+
+.dashboard-section.last {
+  margin-bottom: 0;
 }
 
 .sidebar-backdrop {
@@ -1468,4 +1659,185 @@
     flex-direction: column;
     gap: 12px;
   }
+}
+
+:root[data-theme="light"] .dashboard-shell {
+  color: var(--app-text);
+  background: var(--app-bg);
+}
+
+:root[data-theme="light"] .dashboard-sidebar,
+:root[data-theme="light"] .sidebar-bottom-panel,
+:root[data-theme="light"] .dashboard-brand,
+:root[data-theme="light"] .dashboard-header,
+:root[data-theme="light"] .stories-composer,
+:root[data-theme="light"] .story-card,
+:root[data-theme="light"] .dashboard-info-card,
+:root[data-theme="light"] .users-count,
+:root[data-theme="light"] .user-card,
+:root[data-theme="light"] .dashboard-stat-card,
+:root[data-theme="light"] .dashboard-section {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .dashboard-brand span,
+:root[data-theme="light"] .navigation-label,
+:root[data-theme="light"] .dashboard-header-title p,
+:root[data-theme="light"] .welcome-copy p,
+:root[data-theme="light"] .dashboard-info-card p,
+:root[data-theme="light"] .users-page-heading p,
+:root[data-theme="light"] .users-count span,
+:root[data-theme="light"] .user-card-details p,
+:root[data-theme="light"] .users-state,
+:root[data-theme="light"] .dashboard-loading,
+:root[data-theme="light"] .dashboard-stat-info p,
+:root[data-theme="light"] .funnel-label,
+:root[data-theme="light"] .funnel-stats,
+:root[data-theme="light"] .plan-features li,
+:root[data-theme="light"] .insight-type,
+:root[data-theme="light"] .activity-time,
+:root[data-theme="light"] .support-stats p,
+:root[data-theme="light"] .btn-secondary {
+  color: var(--app-text-muted);
+}
+
+:root[data-theme="light"] .dashboard-navigation button,
+:root[data-theme="light"] .dashboard-logout,
+:root[data-theme="light"] .sidebar-section > button,
+:root[data-theme="light"] .sidebar-submenu button {
+  color: var(--app-text-secondary);
+}
+
+:root[data-theme="light"] .dashboard-navigation button:hover,
+:root[data-theme="light"] .sidebar-submenu button:hover {
+  color: var(--app-text);
+  background: var(--app-panel-hover);
+}
+
+:root[data-theme="light"] .dashboard-navigation button.active,
+:root[data-theme="light"] .sidebar-section > button.active,
+:root[data-theme="light"] .sidebar-submenu button.active {
+  color: #fff;
+}
+
+:root[data-theme="light"] .mobile-menu-button,
+:root[data-theme="light"] .users-search,
+:root[data-theme="light"] .dashboard-content-inner,
+:root[data-theme="light"] .dashboard-stat-icon,
+:root[data-theme="light"] .plan-card,
+:root[data-theme="light"] .insight-card,
+:root[data-theme="light"] .activity-item,
+:root[data-theme="light"] .btn-secondary,
+:root[data-theme="light"] .dashboard-inline-panel {
+  background: var(--app-panel-muted);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .stories-panel,
+:root[data-theme="light"] .dashboard-content-inner {
+  background: linear-gradient(180deg, #f6f9fd, #edf3f9);
+}
+
+:root[data-theme="light"] .dashboard-home {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(79, 70, 229, 0.08), transparent 30%),
+    linear-gradient(180deg, #f6f9fd, #edf3f9);
+}
+
+:root[data-theme="light"] .users-page {
+  background:
+    radial-gradient(circle at 90% 5%, rgba(79, 70, 229, 0.08), transparent 28%),
+    linear-gradient(180deg, #f6f9fd, #edf3f9);
+}
+
+:root[data-theme="light"] .dashboard-welcome-card {
+  background: linear-gradient(135deg, #ffffff, #edf3ff);
+  border-color: #cfd8ea;
+}
+
+:root[data-theme="light"] .welcome-kicker,
+:root[data-theme="light"] .users-count strong,
+:root[data-theme="light"] .dashboard-stat-info h3,
+:root[data-theme="light"] .funnel-count,
+:root[data-theme="light"] .dashboard-section h2,
+:root[data-theme="light"] .activity-content,
+:root[data-theme="light"] .support-number {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .dashboard-user-copy strong,
+:root[data-theme="light"] .dashboard-header-title h1,
+:root[data-theme="light"] .users-page-heading h2,
+:root[data-theme="light"] .user-card-details h3,
+:root[data-theme="light"] .plan-card h3,
+:root[data-theme="light"] .insight-card p {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .dashboard-user-copy span,
+:root[data-theme="light"] .user-status {
+  color: var(--app-success);
+}
+
+:root[data-theme="light"] .stories-composer input,
+:root[data-theme="light"] .stories-composer select,
+:root[data-theme="light"] .users-search input {
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .users-search svg {
+  stroke: var(--app-text-muted);
+}
+
+:root[data-theme="light"] .users-search input::placeholder {
+  color: var(--app-text-muted);
+}
+
+:root[data-theme="light"] .refresh-users,
+:root[data-theme="light"] .users-state button {
+  color: #fff;
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+}
+
+:root[data-theme="light"] .you-badge {
+  color: var(--app-accent);
+  background: var(--app-accent-soft);
+}
+
+:root[data-theme="light"] .users-loader {
+  border-color: var(--app-border);
+  border-top-color: var(--app-accent);
+}
+
+:root[data-theme="light"] .plan-card.plan-selected {
+  background: #eef2ff;
+}
+
+:root[data-theme="light"] .insight-card h4,
+:root[data-theme="light"] .plan-price,
+:root[data-theme="light"] .insight-action,
+:root[data-theme="light"] .dashboard-inline-accent {
+  color: var(--app-accent);
+}
+
+:root[data-theme="light"] .insight-confidence {
+  color: #166534;
+  background: #dcfce7;
+}
+
+:root[data-theme="light"] .insight-footer,
+:root[data-theme="light"] .funnel-stats {
+  border-color: var(--app-border);
+}
+
+:root[data-theme="light"] .btn-secondary:hover,
+:root[data-theme="light"] .insight-action:hover {
+  background: var(--app-panel-hover);
+  color: var(--app-text);
+}
+
+:root[data-theme="light"] .users-state.error {
+  color: var(--app-danger);
 }
