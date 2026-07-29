@@ -109,7 +109,8 @@ const sendOtpEmail = async (recipient, code) => {
     transporterOptions = {
       host,
       port,
-      secure: port === 465,
+     secure: false,
+      requireTLS: true,
       auth: { user, pass },
     };
   } else if (hasGmailConfig) {
