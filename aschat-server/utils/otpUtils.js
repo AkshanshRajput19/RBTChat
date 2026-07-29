@@ -144,10 +144,13 @@ const sendOtpEmail = async (recipient, code) => {
 
     return true;
   } catch (error) {
-    console.error(
-      "OTP email delivery failed:",
-      error?.response || error?.message || error
-    );
+    console.error("========== OTP ERROR ==========");
+    console.error(error);
+    console.error("Code:", error.code);
+    console.error("Message:", error.message);
+    console.error("Response:", error.response);
+    console.error("Stack:", error.stack);
+    console.error("================================");
     return false;
   }
 };

@@ -944,7 +944,7 @@
 }
 
 .public-footer-social a:hover {
-  background: linear-gradient(135deg, #cc85ff, #8d45ff);
+  background: linear-gradient(135deg, #6a3292, #56358d);
   transform: translateY(-4px);
 }
 
@@ -982,7 +982,7 @@
 }
 
 .public-footer-contact-item svg {
-  color: #cb7dff;
+  color: #7c3ca7;
   font-size: 18px;
 }
 
@@ -1223,7 +1223,7 @@
 
     border-radius:50%;
 
-    background:radial-gradient(#b56eff,transparent 70%);
+    background:radial-gradient(#552f7d,transparent 70%);
 
     opacity:.25;
 }
@@ -1299,7 +1299,7 @@
 
     border-radius:50%;
 
-    background:linear-gradient(135deg,#b56eff,#7f35ff);
+    background:linear-gradient(135deg,#702db7,#563294);
 
     display:flex;
 
@@ -1345,7 +1345,7 @@
 
     border-radius:18px;
 
-    background:linear-gradient(135deg,#7f35ff,#b56eff);
+    background:linear-gradient(135deg,#521eaa,#4d1787);
 
     color:white;
 }
