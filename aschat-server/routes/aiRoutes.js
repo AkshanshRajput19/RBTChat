@@ -1,6 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware");
 const Message = require("../models/Message");
+const { runPythonAi } = require("../services/pythonAiGateway");
 const {
   PHASE_2_STEPS,
   analyzeUserPatterns: analyzeRbtUserPatterns,
@@ -19,6 +20,63 @@ router.get("/phase2", (req, res) => {
     subtitle: "AI Chat Flow, Sentiment Analysis, Predictive Messaging, and Call Assistant",
     steps: PHASE_2_STEPS
   });
+});
+
+router.get("/config", async (req, res) => {
+  try {
+    const aiConfig = await runPythonAi("config", {});
+    return res.json(aiConfig);
+  } catch (error) {
+    console.error("AI config error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to load AI configuration right now.",
+    });
+  }
+});
+
+router.post("/chat", async (req, res) => {
+  try {
+    const incomingMessages = Array.isArray(req.body.messages) ? req.body.messages : [];
+    const provider = String(req.body.provider || "").trim();
+    const model = String(req.body.model || "").trim();
+    const currentUserName = String(req.body.currentUserName || "").trim();
+    const systemPrompt = String(req.body.systemPrompt || "").trim();
+
+    const messages = incomingMessages
+      .slice(-24)
+      .map((message) => ({
+        role: String(message?.role || "").trim().toLowerCase(),
+        content: String(message?.content || message?.text || "").trim(),
+      }))
+      .filter(
+        (message) =>
+          ["user", "assistant", "system"].includes(message.role) && message.content
+      );
+
+    if (!messages.length) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one message is required.",
+      });
+    }
+
+    const aiResponse = await runPythonAi("chat", {
+      messages,
+      provider,
+      model,
+      currentUserName,
+      systemPrompt,
+    });
+
+    return res.json(aiResponse);
+  } catch (error) {
+    console.error("AI chat error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to generate an AI response right now.",
+    });
+  }
 });
 
 // WRITING PATTERN ANALYSIS - extract user's communication style

@@ -3,6 +3,7 @@ import "./Auth.css";
 function AuthLayout({
   mode,
   setShowLogin,
+  onReturnHome,
   eyebrow,
   heroTitle,
   heroText,
@@ -16,46 +17,47 @@ function AuthLayout({
 
   return (
     <div className={`auth-page auth-page--${mode}`}>
-      <div className="auth-orb auth-orb--left" aria-hidden="true" />
-      <div className="auth-orb auth-orb--right" aria-hidden="true" />
-      <div className="auth-landscape auth-landscape--far" aria-hidden="true" />
-      <div className="auth-waterfall-group" aria-hidden="true">
-        <div className="auth-waterfall auth-waterfall--primary" />
-        <div className="auth-waterfall auth-waterfall--secondary" />
-        <div className="auth-waterfall-spray" />
-      </div>
-      <div className="auth-landscape auth-landscape--mid" aria-hidden="true" />
-      <div className="auth-river" aria-hidden="true" />
-      <div className="auth-landscape auth-landscape--front" aria-hidden="true" />
+      <div className="auth-noise" aria-hidden="true" />
+      <div className="auth-glow auth-glow--left" aria-hidden="true" />
+      <div className="auth-glow auth-glow--right" aria-hidden="true" />
 
       <header className="auth-header">
         <div className="auth-brand">
-          <div className="auth-brand-mark">R</div>
+          <div className="auth-brand-mark">
+            <span />
+            <span />
+          </div>
           <div className="auth-brand-copy">
             <strong>RBTChat</strong>
-            <span>Secure conversations with stories, calls, and AI support.</span>
+            <span>Secure conversations with launch-screen energy and fast team access.</span>
           </div>
         </div>
 
-        <nav className="auth-nav" aria-label="Authentication">
-          <button
-            type="button"
-            className={`auth-nav-btn${isLogin ? " auth-nav-btn--active" : ""}`}
-            onClick={() => setShowLogin(true)}
-            aria-pressed={isLogin}
-          >
-            Login
+        <div className="auth-header-actions">
+          <button type="button" className="auth-home-btn" onClick={onReturnHome}>
+            Back to home
           </button>
 
-          <button
-            type="button"
-            className={`auth-nav-btn${!isLogin ? " auth-nav-btn--active" : ""}`}
-            onClick={() => setShowLogin(false)}
-            aria-pressed={!isLogin}
-          >
-            Register
-          </button>
-        </nav>
+          <nav className="auth-nav" aria-label="Authentication">
+            <button
+              type="button"
+              className={`auth-nav-btn${isLogin ? " auth-nav-btn--active" : ""}`}
+              onClick={() => setShowLogin(true)}
+              aria-pressed={isLogin}
+            >
+              Login
+            </button>
+
+            <button
+              type="button"
+              className={`auth-nav-btn${!isLogin ? " auth-nav-btn--active" : ""}`}
+              onClick={() => setShowLogin(false)}
+              aria-pressed={!isLogin}
+            >
+              Register
+            </button>
+          </nav>
+        </div>
       </header>
 
       <main className="auth-main">
@@ -69,6 +71,7 @@ function AuthLayout({
               <span key={highlight}>{highlight}</span>
             ))}
           </div>
+
         </section>
 
         <section className="auth-panel">

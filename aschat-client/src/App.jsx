@@ -1,16 +1,31 @@
+import Settings from "./components/Settings";
+import AI from "./components/AI";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import PublicLanding from "./components/PublicLanding";
 import Chat from "./components/Chat";
 import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import SubscriptionManagement from "./components/SubscriptionManagement";
 import Users from "./components/Users";
 import { UNAUTHORIZED_EVENT } from "./api";
+import { getSettingsSection, isSettingsLikePage } from "./components/settingsSections";
 import { connectSocket, disconnectSocket } from "./socket";
 import "./components/DashboardLayout.css";
 
 const THEME_STORAGE_KEY = "rbtchatTheme";
+const SUBSCRIPTION_PAGES = new Set([
+  "subscription",
+  "allSubscriptions",
+  "pendingRequests",
+  "plans",
+  "addPlan",
+  "pwaSettings",
+  "paymentHistory",
+  "customDomain",
+]);
 
 const getInitialTheme = () => {
   if (typeof window === "undefined") {
@@ -22,7 +37,7 @@ const getInitialTheme = () => {
 };
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true);
+  const [publicView, setPublicView] = useState("landing");
   const [activePage, setActivePage] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(
     () => window.innerWidth > 900
@@ -36,11 +51,15 @@ function App() {
     }
   });
   const [socket, setSocket] = useState(null);
+  const [lastNonSettingsPage, setLastNonSettingsPage] = useState("dashboard");
+
+  const settingsSection = getSettingsSection(activePage);
+  const isSubscriptionPage = SUBSCRIPTION_PAGES.has(activePage);
 
   const resetSessionState = () => {
     localStorage.removeItem("rbtchatSession");
     setSession(null);
-    setShowLogin(true);
+    setPublicView("landing");
     setActivePage("dashboard");
     setIsSidebarOpen(window.innerWidth > 900);
   };
@@ -50,6 +69,18 @@ function App() {
     document.documentElement.style.colorScheme = theme;
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (!isSettingsLikePage(activePage)) {
+      setLastNonSettingsPage(activePage);
+    }
+  }, [activePage]);
+
+  useEffect(() => {
+    if (!session) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [publicView, session]);
 
   useEffect(() => {
     if (!session?.token) {
@@ -96,6 +127,25 @@ function App() {
     resetSessionState();
   };
 
+  const handleProfileUpdate = (userUpdates) => {
+    setSession((currentSession) => {
+      if (!currentSession) {
+        return currentSession;
+      }
+
+      const nextSession = {
+        ...currentSession,
+        user: {
+          ...currentSession.user,
+          ...userUpdates,
+        },
+      };
+
+      localStorage.setItem("rbtchatSession", JSON.stringify(nextSession));
+      return nextSession;
+    });
+  };
+
   if (session) {
     return (
       <div className="dashboard-shell">
@@ -109,40 +159,79 @@ function App() {
 
         <div className="dashboard-main">
           <Header
-            currentUser={session.user}
-            page={activePage}
-            isSidebarOpen={isSidebarOpen}
-            onMenuClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
-            theme={theme}
-            onThemeChange={setTheme}
-          />
+  currentUser={session.user}
+  page={activePage}
+  isSidebarOpen={isSidebarOpen}
+          onMenuClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
+  theme={theme}
+  onThemeChange={setTheme}
+  onNavigate={setActivePage}
+  onLogout={handleLogout}
+/>
 
-          <div className="dashboard-content">
-            {activePage === "dashboard" ? (
-              <Dashboard
-                currentUser={session.user}
-                onOpenChats={() => setActivePage("chats")}
-              />
-            ) : activePage === "users" ? (
-              <Users currentUser={session.user} />
-            ) : (
-              <Chat currentUser={session.user} socket={socket} />
-            )}
-          </div>
+         <div className="dashboard-content">
+  {activePage === "dashboard" ? (
+    <Dashboard
+      currentUser={session.user}
+      onOpenChats={() => setActivePage("chats")}
+    />
+  ) : activePage === "users" ? (
+    <Users currentUser={session.user} />
+  ) : activePage === "ai" ? (
+    <AI currentUser={session.user} />
+  ) : isSubscriptionPage ? (
+    <SubscriptionManagement
+      currentUser={session.user}
+      activePage={activePage}
+      onNavigate={setActivePage}
+    />
+  ) : settingsSection ? (
+    <Settings
+      currentUser={session.user}
+      section={settingsSection}
+      returnPage={lastNonSettingsPage}
+      theme={theme}
+      onThemeChange={setTheme}
+      onNavigate={setActivePage}
+      onLogout={handleLogout}
+      onProfileSave={handleProfileUpdate}
+    />
+  ) : (
+    <Chat
+      currentUser={session.user}
+      socket={socket}
+    />
+  )}
+</div>
         </div>
       </div>
     );
   }
 
-  return showLogin ? (
+  const setShowLogin = (shouldShowLogin) => {
+    setPublicView(shouldShowLogin ? "login" : "register");
+  };
+
+  if (publicView === "landing") {
+    return (
+      <PublicLanding
+        onLogin={() => setPublicView("login")}
+        onRegister={() => setPublicView("register")}
+      />
+    );
+  }
+
+  return publicView === "login" ? (
     <Login
       setShowLogin={setShowLogin}
       onAuth={handleAuth}
+      onReturnHome={() => setPublicView("landing")}
     />
   ) : (
     <Register
       setShowLogin={setShowLogin}
       onAuth={handleAuth}
+      onReturnHome={() => setPublicView("landing")}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isSettingsLikePage } from "./settingsSections";
 import "./DashboardLayout.css";
 
 function DashboardIcon() {
@@ -102,31 +103,24 @@ function UsersIcon() {
   );
 }
 
-function LogoutIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M10 17l5-5-5-5M15 12H3M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5" />
-    </svg>
-  );
-}
+const subscriptionPages = [
+  "subscription",
+  "allSubscriptions",
+  "pendingRequests",
+  "plans",
+  "addPlan",
+  "pwaSettings",
+  "paymentHistory",
+  "customDomain",
+];
 
-function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
+function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
   const navigate = (page) => {
     onNavigate(page);
   };
+  const isSettingsPage = isSettingsLikePage(activePage);
 
   const [showSubscriptionMenu, setShowSubscriptionMenu] = useState(false);
-  const subscriptionPages = [
-    "subscription",
-    "allSubscriptions",
-    "pendingRequests",
-    "plans",
-    "addPlan",
-    "pwaSettings",
-    "paymentHistory",
-    "setting",
-    "customDomain",
-  ];
 
   useEffect(() => {
     if (!subscriptionPages.includes(activePage)) {
@@ -224,13 +218,6 @@ function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
                   <span>Payment History</span>
                 </button>
                 <button
-                  className={activePage === "setting" ? "active" : ""}
-                  onClick={() => navigate("setting")}
-                >
-                  <SettingIcon />
-                  <span>Setting</span>
-                </button>
-                <button
                   className={activePage === "customDomain" ? "active" : ""}
                   onClick={() => navigate("customDomain")}
                 >
@@ -256,14 +243,35 @@ function Sidebar({ activePage, isOpen, onNavigate, onLogout, onClose }) {
             <UsersIcon />
             <span>Users</span>
           </button>
-        </nav>
 
-        <div className="dashboard-sidebar-footer">
-          <button className="dashboard-logout" onClick={onLogout}>
-            <LogoutIcon />
-            <span>Logout</span>
-          </button>
-        </div>
+          <button
+          className={activePage === "ai" ? "active" : ""}
+          onClick={() => navigate("ai")}
+          >
+          <svg
+          viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         strokeWidth="1.8"
+         strokeLinecap="round"
+         strokeLinejoin="round"
+          >
+        <path d="M12 3l1.5 3.5L17 8l-3.5 1.5L12 13l-1.5-3.5L7 8l3.5-1.5L12 3z" />
+        <path d="M5 15l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z" />
+        <path d="M19 15l.8 1.8L22 18l-2.2 1.2L19 21l-.8-1.8L16 18l2.2-1.2L19 15z" />
+        </svg>
+        <span>AI</span>
+        </button>
+
+          <button
+  className={isSettingsPage ? "active" : ""}
+  onClick={() => navigate("settings")}
+>
+  <SettingIcon />
+  <span>Settings</span>
+</button>
+       </nav>
+        
       </aside>
     </>
   );

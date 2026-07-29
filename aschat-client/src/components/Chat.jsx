@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import api, { getActiveServerOrigin } from "../api";
 import useWebRTCCall from "../hooks/useWebRTCCall";
 import CallOverlay from "./CallOverlay";
-import {
+import
+
+{
   emojiCategories,
   gifOptions,
   gifOptionsById,
   stickerOptions,
   stickerOptionsById,
-} from "./chatComposerAssets";
+} 
+
+from "./chatComposerAssets";
 import "./Chat.css";
 
 function PhoneCallIcon() {
@@ -227,6 +231,9 @@ function Chat({ currentUser, socket }) {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [message, setMessage] = useState("");
   const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showComposerHub, setShowComposerHub] = useState(false);
+  const [composerTab, setComposerTab] = useState("emoji");
+  const [composerSearch, setComposerSearch] = useState("");
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState("");
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -240,6 +247,7 @@ function Chat({ currentUser, socket }) {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [conversationMode, setConversationMode] = useState("direct");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupMemberIds, setGroupMemberIds] = useState([]);
   const [showGroupAdminPanel, setShowGroupAdminPanel] = useState(false);
@@ -254,6 +262,9 @@ function Chat({ currentUser, socket }) {
   const [userPatterns, setUserPatterns] = useState(null);
   const [contextualInsight, setContextualInsight] = useState(null);
   const messagesEndRef = useRef(null);
+  const attachWrapperRef = useRef(null);
+  const composerHubWrapperRef = useRef(null);
+  const messageInputRef = useRef(null);
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const documentInputRef = useRef(null);
@@ -279,6 +290,39 @@ function Chat({ currentUser, socket }) {
       socket.off("online-users", handleOnlineUsers);
     };
   }, [socket]);
+
+  useEffect(() => {
+    if (!showAttachMenu && !showComposerHub) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event) => {
+      if (
+        attachWrapperRef.current?.contains(event.target) ||
+        composerHubWrapperRef.current?.contains(event.target)
+      ) {
+        return;
+      }
+
+      setShowAttachMenu(false);
+      setShowComposerHub(false);
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setShowAttachMenu(false);
+        setShowComposerHub(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [showAttachMenu, showComposerHub]);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -457,6 +501,12 @@ function Chat({ currentUser, socket }) {
     if (chatMessage.type === "image") return "Photo";
     if (chatMessage.type === "document") return "Document";
     if (chatMessage.type === "location") return "Location";
+    if (chatMessage.type === "sticker") {
+      return stickerOptionsById[chatMessage.text]?.label || "Sticker";
+    }
+    if (chatMessage.type === "gif") {
+      return gifOptionsById[chatMessage.text]?.label || "GIF";
+    }
     return chatMessage.text;
   };
 
@@ -473,8 +523,14 @@ function Chat({ currentUser, socket }) {
       minute: "2-digit",
     });
 
-  const sendTextMessage = async (text, messageType = "text") => {
+  const sendTextMessage = async (
+    text,
+    messageType = "text",
+    options = {}
+  ) => {
     if (!selectedUser || !text.trim() || isSending) return;
+
+    const { clearInput = true } = options;
 
     try {
       setIsSending(true);
@@ -489,7 +545,9 @@ function Chat({ currentUser, socket }) {
         ...currentMessages,
         response.data.message,
       ]);
-      setMessage("");
+      if (clearInput) {
+        setMessage("");
+      }
        if (sessionId && text) {
         try {
           await api.post(
@@ -521,6 +579,33 @@ function Chat({ currentUser, socket }) {
     const text = message.trim();
     if (!selectedUser || !text || isSending) return;
     await sendTextMessage(text, "text");
+  };
+
+  const insertEmojiIntoComposer = (emoji) => {
+    if (!emoji || isRecording || isUploading) return;
+
+    const inputElement = messageInputRef.current;
+    const start = inputElement?.selectionStart ?? message.length;
+    const end = inputElement?.selectionEnd ?? message.length;
+    const nextValue = `${message.slice(0, start)}${emoji}${message.slice(end)}`.slice(0, 2000);
+    const nextCaretPosition = Math.min(start + emoji.length, nextValue.length);
+
+    setMessage(nextValue);
+
+    requestAnimationFrame(() => {
+      inputElement?.focus();
+      inputElement?.setSelectionRange(nextCaretPosition, nextCaretPosition);
+    });
+  };
+
+  const sendRichMessage = async (assetId, messageType) => {
+    if (!selectedUser || !assetId || isSending || isUploading || isRecording) {
+      return;
+    }
+
+    setShowComposerHub(false);
+    setComposerSearch("");
+    await sendTextMessage(assetId, messageType, { clearInput: false });
   };
 
   const requestAiSuggestions = async () => {
@@ -602,6 +687,13 @@ function Chat({ currentUser, socket }) {
     }
   }, [selectedUser]);
 
+  useEffect(() => {
+    setShowAttachMenu(false);
+    setShowComposerHub(false);
+    setComposerSearch("");
+    setComposerTab("emoji");
+  }, [selectedUser?._id, selectedGroup?._id, conversationMode]);
+
   const sendMediaMessage = async (file, mediaType) => {
     if (!selectedUser || !file || isUploading) return;
 
@@ -658,7 +750,128 @@ function Chat({ currentUser, socket }) {
       () => {
         setError("Location access was denied or unavailable.");
       }
-    );
+    );x
+  };
+
+  const normalizedComposerSearch = composerSearch.trim().toLowerCase();
+
+  const filteredEmojiCategories = useMemo(
+    () =>
+      emojiCategories
+        .map((category) => ({
+          ...category,
+          options: category.options.filter(
+            (option) =>
+              !normalizedComposerSearch ||
+              option.searchText.includes(normalizedComposerSearch)
+          ),
+        }))
+        .filter((category) => category.options.length > 0),
+    [normalizedComposerSearch]
+  );
+
+  const filteredStickerOptions = useMemo(
+    () =>
+      stickerOptions.filter(
+        (option) =>
+          !normalizedComposerSearch ||
+          option.searchText.includes(normalizedComposerSearch)
+      ),
+    [normalizedComposerSearch]
+  );
+
+  const filteredGifOptions = useMemo(
+    () =>
+      gifOptions.filter(
+        (option) =>
+          !normalizedComposerSearch ||
+          option.searchText.includes(normalizedComposerSearch)
+      ),
+    [normalizedComposerSearch]
+  );
+
+  const renderDirectMessageBody = (chatMessage) => {
+    if (chatMessage.type === "voice") {
+      return (
+        <audio
+          className="voice-message"
+          controls
+          preload="metadata"
+          src={getMediaUrl(chatMessage.mediaUrl)}
+        />
+      );
+    }
+
+    if (chatMessage.type === "video") {
+      return (
+        <video
+          className="video-message"
+          controls
+          preload="metadata"
+          src={getMediaUrl(chatMessage.mediaUrl)}
+        />
+      );
+    }
+
+    if (chatMessage.type === "image") {
+      return (
+        <img
+          className="image-message"
+          src={getMediaUrl(chatMessage.mediaUrl)}
+          alt={chatMessage.fileName || "Shared photo"}
+        />
+      );
+    }
+
+    if (chatMessage.type === "document") {
+      return (
+        <a
+          className="document-message"
+          href={getMediaUrl(chatMessage.mediaUrl)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {chatMessage.fileName || "Open document"}
+        </a>
+      );
+    }
+
+    if (chatMessage.type === "location") {
+      return (
+        <div className="location-message">
+          <p>{chatMessage.text}</p>
+          {(() => {
+            const match = chatMessage.text?.match(
+              /(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/
+            );
+            if (match) {
+              return (
+                <a
+                  href={`https://www.google.com/maps?q=${match[1]},${match[2]}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open in map
+                </a>
+              );
+            }
+            return null;
+          })()}
+        </div>
+      );
+    }
+
+    if (chatMessage.type === "sticker") {
+      const asset = stickerOptionsById[chatMessage.text];
+      return asset ? <StickerMessageCard asset={asset} /> : <p>{chatMessage.text}</p>;
+    }
+
+    if (chatMessage.type === "gif") {
+      const asset = gifOptionsById[chatMessage.text];
+      return asset ? <GifMessageCard asset={asset} /> : <p>{chatMessage.text}</p>;
+    }
+
+    return <p>{chatMessage.text}</p>;
   };
 
   const isDeletedForCurrentUser = (chatMessage) => {
@@ -824,15 +1037,57 @@ function Chat({ currentUser, socket }) {
         </header>
 
         <div className="sidebar-title">
-          <h2>Chats</h2>
-          <button
-            type="button"
-            className="icon-button"
-            onClick={() => setShowCreateGroup((open) => !open)}
-          >
-            +
-          </button>
-        </div>
+  <h2>Chats</h2>
+
+  <div className="sidebar-title-actions">
+
+    <button
+      type="button"
+      className="icon-button"
+      onClick={() => setShowCreateGroup((open) => !open)}
+      title="New Chat"
+    >
+      +
+    </button>
+
+    <div className="more-menu-wrapper">
+  <button
+    type="button"
+    className="icon-button"
+    onClick={() => setShowMoreMenu(!showMoreMenu)}
+  >
+    ⋮
+  </button>
+
+  {showMoreMenu && (
+    <div className="more-menu">
+
+      <button>Catalogue</button>
+      <button>Communities</button>
+      <button>Lists</button>
+
+      <button>Advertisements</button>
+
+      <button>Starred Messages</button>
+
+      <button>Select Chats</button>
+
+      <button>Mark all as read</button>
+      
+      <button>Settings</button>
+
+      <hr />
+
+      <button>App Lock</button>
+
+      <button className="logout">Logout</button>
+
+    </div>
+  )}
+</div>
+
+  </div>
+</div>
 
         {showCreateGroup && (
           <div className="group-creator">
@@ -1256,61 +1511,17 @@ function Chat({ currentUser, socket }) {
                       className={`message-row ${isMine ? "mine" : "theirs"}`}
                       key={chatMessage._id}
                     >
-                      <div className="message-bubble">
+                      <div
+                        className={`message-bubble ${
+                          ["sticker", "gif"].includes(chatMessage.type)
+                            ? "rich-message"
+                            : ""
+                        }`}
+                      >
                         {isDeleted ? (
                           <p className="deleted-message">This message was deleted</p>
-                        ) : chatMessage.type === "voice" ? (
-                          <audio
-                            className="voice-message"
-                            controls
-                            preload="metadata"
-                            src={getMediaUrl(chatMessage.mediaUrl)}
-                          />
-                        ) : chatMessage.type === "video" ? (
-                          <video
-                            className="video-message"
-                            controls
-                            preload="metadata"
-                            src={getMediaUrl(chatMessage.mediaUrl)}
-                          />
-                        ) : chatMessage.type === "image" ? (
-                          <img
-                            className="image-message"
-                            src={getMediaUrl(chatMessage.mediaUrl)}
-                            alt={chatMessage.fileName || "Shared photo"}
-                          />
-                        ) : chatMessage.type === "document" ? (
-                          <a
-                            className="document-message"
-                            href={getMediaUrl(chatMessage.mediaUrl)}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {chatMessage.fileName || "Open document"}
-                          </a>
-                        ) : chatMessage.type === "location" ? (
-                          <div className="location-message">
-                            <p>{chatMessage.text}</p>
-                            {(() => {
-                              const match = chatMessage.text?.match(
-                                /(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/
-                              );
-                              if (match) {
-                                return (
-                                  <a
-                                    href={`https://www.google.com/maps?q=${match[1]},${match[2]}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    Open in map
-                                  </a>
-                                );
-                              }
-                              return null;
-                            })()}
-                          </div>
                         ) : (
-                          <p>{chatMessage.text}</p>
+                          renderDirectMessageBody(chatMessage)
                         )}
                         <div className="message-meta">
                           <div className="message-time">
@@ -1360,11 +1571,14 @@ function Chat({ currentUser, socket }) {
             </section>
 
             <footer className="message-input">
-              <div className="attach-wrapper">
+              <div className="attach-wrapper" ref={attachWrapperRef}>
                 <button
                   className="input-icon"
                   title="Attach"
-                  onClick={() => setShowAttachMenu((open) => !open)}
+                  onClick={() => {
+                    setShowComposerHub(false);
+                    setShowAttachMenu((open) => !open);
+                  }}
                   type="button"
                 >
                   +
@@ -1374,22 +1588,26 @@ function Chat({ currentUser, socket }) {
                     type="button"
                     onClick={() => photoInputRef.current?.click()}
                   >
-                    Photo
+                    <ImageIcon />
+                    <span>Photo</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => videoInputRef.current?.click()}
                   >
-                    Video
+                    <CameraIcon />
+                    <span>Video</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => documentInputRef.current?.click()}
                   >
-                    Document
+                    <DocumentIcon />
+                    <span>Document</span>
                   </button>
                   <button type="button" onClick={handleShareLocation}>
-                    Location
+                    <LocationIcon />
+                    <span>Location</span>
                   </button>
                   <button
                     type="button"
@@ -1401,6 +1619,135 @@ function Chat({ currentUser, socket }) {
                   >
                     <MicrophoneIcon />
                   </button>
+                </div>
+              </div>
+
+              <div className="composer-hub-wrapper" ref={composerHubWrapperRef}>
+                <button
+                  className={`input-icon composer-hub-toggle ${
+                    showComposerHub ? "active" : ""
+                  }`}
+                  title="Emoji, GIFs and stickers"
+                  type="button"
+                  onClick={() => {
+                    setShowAttachMenu(false);
+                    setShowComposerHub((open) => !open);
+                  }}
+                  disabled={isUploading || isRecording}
+                >
+                  <ComposerHubIcon />
+                </button>
+
+                <div className={`composer-hub-panel ${showComposerHub ? "open" : ""}`}>
+                  <div className="composer-hub-header">
+                    <div>
+                      <strong>Quick reactions</strong>
+                      <p>Emoji, GIFs, and stickers</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="composer-hub-close"
+                      onClick={() => setShowComposerHub(false)}
+                      aria-label="Close picker"
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
+
+                  <div className="composer-hub-tabs">
+                    <button
+                      type="button"
+                      className={composerTab === "emoji" ? "active" : ""}
+                      onClick={() => setComposerTab("emoji")}
+                    >
+                      <SparklesIcon />
+                      <span>Emoji</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={composerTab === "gif" ? "active" : ""}
+                      onClick={() => setComposerTab("gif")}
+                    >
+                      <GifIcon />
+                      <span>GIFs</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={composerTab === "sticker" ? "active" : ""}
+                      onClick={() => setComposerTab("sticker")}
+                    >
+                      <StickerIcon />
+                      <span>Stickers</span>
+                    </button>
+                  </div>
+
+                  <div className="composer-hub-search">
+                    <input
+                      type="text"
+                      value={composerSearch}
+                      onChange={(event) => setComposerSearch(event.target.value)}
+                      placeholder={`Search ${composerTab}...`}
+                    />
+                  </div>
+
+                  <div className="composer-hub-content">
+                    {composerTab === "emoji" ? (
+                      filteredEmojiCategories.length > 0 ? (
+                        filteredEmojiCategories.map((category) => (
+                          <section key={category.id} className="emoji-category">
+                            <h4>{category.label}</h4>
+                            <div className="emoji-grid">
+                              {category.options.map((option) => (
+                                <button
+                                  key={`${category.id}-${option.symbol}-${option.label}`}
+                                  type="button"
+                                  className="emoji-option"
+                                  onClick={() => insertEmojiIntoComposer(option.symbol)}
+                                  title={option.label}
+                                >
+                                  <span className="emoji-symbol">{option.symbol}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </section>
+                        ))
+                      ) : (
+                        <p className="composer-hub-empty">No emojis match that search.</p>
+                      )
+                    ) : composerTab === "gif" ? (
+                      filteredGifOptions.length > 0 ? (
+                        <div className="composer-rich-grid">
+                          {filteredGifOptions.map((asset) => (
+                            <button
+                              key={asset.id}
+                              type="button"
+                              className="composer-rich-card"
+                              onClick={() => sendRichMessage(asset.id, "gif")}
+                            >
+                              <GifMessageCard asset={asset} />
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="composer-hub-empty">No GIFs match that search.</p>
+                      )
+                    ) : filteredStickerOptions.length > 0 ? (
+                      <div className="composer-rich-grid">
+                        {filteredStickerOptions.map((asset) => (
+                          <button
+                            key={asset.id}
+                            type="button"
+                            className="composer-rich-card"
+                            onClick={() => sendRichMessage(asset.id, "sticker")}
+                          >
+                            <StickerMessageCard asset={asset} />
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="composer-hub-empty">No stickers match that search.</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1429,6 +1776,7 @@ function Chat({ currentUser, socket }) {
               />
 
               <input
+                ref={messageInputRef}
                 type="text"
                 placeholder={
                   isRecording

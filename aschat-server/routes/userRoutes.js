@@ -2,17 +2,18 @@ const express = require("express");
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-const twilio = require("twilio");
-const User = require("../models/User");
 const Tenant = require("../models/Tenant");
+const User = require("../models/User");
+const {
+    createOtp,
+    emailPattern,
+    sendOtpEmail,
+    sendOtpMobile
+} = require("../utils/otpUtils");
 
 const router = express.Router();
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const loginAttempts = new Map();
 const otpLoginEnabled = process.env.OTP_LOGIN_ENABLED === "true";
-
-const createOtp = () => String(Math.floor(100000 + Math.random() * 900000));
 const getClientKey = (req) => {
     const forwarded = req.headers["x-forwarded-for"];
     if (typeof forwarded === "string") return forwarded.split(",")[0].trim();
@@ -48,87 +49,6 @@ const createToken = (userId, role, tenantId) => {
     }
 
     return jwt.sign({ userId, role, tenantId }, secret, { expiresIn: "7d" });
-};
-
-const sendOtpEmail = async (userDoc, code) => {
-    const tenant = await Tenant.findOne({ tenantId: userDoc.tenantId });
-    const host = tenant?.smtpHost || process.env.SMTP_HOST;
-    const port = Number(tenant?.smtpPort || process.env.SMTP_PORT || 587);
-    const user = tenant?.smtpUser || process.env.SMTP_USER;
-    const pass = tenant?.smtpPass || process.env.SMTP_PASS;
-    let fromAddress = tenant?.smtpFrom || process.env.SMTP_FROM || user;
-
-    let transporterOptions;
-    const hasSmtpConfig = Boolean(host && user && pass);
-    const gmailUser = String(process.env.GMAIL_USER || "").trim();
-    const gmailPass = String(process.env.GMAIL_PASS || "").trim();
-    const hasGmailConfig = Boolean(gmailUser && gmailPass);
-
-    if (hasSmtpConfig) {
-        transporterOptions = {
-            host,
-            port,
-            secure: port === 465,
-            auth: { user, pass }
-        };
-    } else if (hasGmailConfig) {
-        transporterOptions = {
-            host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
-            auth: {
-                user: gmailUser,
-                pass: gmailPass
-            }
-        };
-        fromAddress = process.env.SMTP_FROM || gmailUser;
-    }
-
-    if (!transporterOptions) {
-        console.warn(`[2FA] SMTP not configured for ${userDoc.email}. SMTP config present=${hasSmtpConfig}, Gmail config present=${hasGmailConfig}`);
-        return false;
-    }
-
-    try {
-        const transporter = nodemailer.createTransport(transporterOptions);
-
-        await transporter.sendMail({
-            from: fromAddress,
-            to: userDoc.email,
-            subject: "RBTChat Verification Code",
-            html: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`
-        });
-
-        return true;
-    } catch (error) {
-        console.error("OTP email delivery failed:", error?.response || error?.message || error);
-        return false;
-    }
-};
-
-const sendOtpMobile = async (userDoc, code) => {
-    const tenant = await Tenant.findOne({ tenantId: userDoc.tenantId });
-    const accountSid = tenant?.twilioAccountSid || process.env.TWILIO_ACCOUNT_SID;
-    const authToken = tenant?.twilioAuthToken || process.env.TWILIO_AUTH_TOKEN;
-    const fromNumber = tenant?.twilioFrom || process.env.TWILIO_FROM;
-
-    if (!userDoc.phoneNumber || !accountSid || !authToken || !fromNumber) {
-        console.warn(`[2FA] Mobile OTP provider not configured. Mobile OTP for ${userDoc.phoneNumber}: ${code}`);
-        return false;
-    }
-
-    try {
-        const client = twilio(accountSid, authToken);
-        await client.messages.create({
-            body: `Your verification code is ${code}.`,
-            from: fromNumber,
-            to: userDoc.phoneNumber
-        });
-        return true;
-    } catch (error) {
-        console.error("OTP mobile delivery failed:", error);
-        return false;
-    }
 };
 
 router.post("/register", async (req, res) => {

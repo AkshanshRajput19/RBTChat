@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../api";
 import AuthLayout from "./AuthLayout";
 
-function Register({ setShowLogin, onAuth }) {
+function Register({ setShowLogin, onAuth, onReturnHome }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,13 +54,14 @@ function Register({ setShowLogin, onAuth }) {
     <AuthLayout
       mode="register"
       setShowLogin={setShowLogin}
-      eyebrow="Dreamy onboarding"
-      heroTitle="Create a colorful new place for your people to connect."
-      heroText="Build your profile and start messaging in a space made for lively conversations, quick calls, stories, and secure collaboration."
-      highlights={["Fast account setup", "Stories and live chat", "Ready for groups and AI"]}
+      onReturnHome={onReturnHome}
+      eyebrow="Professional onboarding // new access node"
+      heroTitle="Launch your communication stack in a few steps and bring teams into a sharper customer-facing world."
+      heroText="Create your account to move from the public launch screen into private operations with messaging, calls, stories, subscriptions, and AI support all ready behind the same visual system."
+      highlights={["Fast account setup", "Stories and live chat", "Ready for teams and AI"]}
       cardEyebrow="New account"
       cardTitle="Create your account"
-      cardDescription="A few details and you are ready to join RBTChat."
+      cardDescription="A few details and your workspace is ready to come online."
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <label className="auth-field">

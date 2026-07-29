@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../api";
 import AuthLayout from "./AuthLayout";
 
-function Login({ setShowLogin, onAuth }) {
+function Login({ setShowLogin, onAuth, onReturnHome }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
@@ -80,17 +80,21 @@ function Login({ setShowLogin, onAuth }) {
     <AuthLayout
       mode="login"
       setShowLogin={setShowLogin}
-      eyebrow="Secure social messaging"
-      heroTitle="Step back into your conversations under a calmer sky."
-      heroText="RBTChat brings messages, calling, stories, and AI support into one warm workspace that still feels personal."
-      highlights={["Private access", "Live calls and chat", "RBT-AI assistance"]}
-      cardEyebrow={requiresOtp ? "Two-factor sign in" : "Welcome back"}
-      cardTitle={requiresOtp ? "Verify your login" : "Login to RBTChat"}
+      onReturnHome={onReturnHome}
+      eyebrow="Secure workspace access // member return"
+      heroTitle="Drop back into the signal with your chats, customer context, and AI support ready to go."
+      heroText="The public experience now opens with a louder launch aesthetic, and this sign-in flow keeps the same energy while staying fast, focused, and secure."
+      highlights={["Protected access", "Live chat and calling", "AI-assisted workflow"]}
+      cardEyebrow={requiresOtp ? "Two-factor sign in" : "Member login"}
+      cardTitle={requiresOtp ? "Verify your login" : "Sign in to RBTChat"}
       cardDescription={
         requiresOtp
-          ? "We found your account. Enter the 6-digit verification code to finish signing in."
-          : "Access your workspace, continue your chats, and pick up right where you left off."
+          ? "We found your account. Enter the 6-digit verification code to complete the access handshake."
+          : "Access your workspace, reopen live conversations, and continue from the same operating layer."
       }
+
+
+      
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         {!requiresOtp ? (

@@ -1,0 +1,534 @@
+.subscription-admin-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subscription-admin-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subscription-admin-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.subscription-admin-grid--cards {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.subscription-admin-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.subscription-admin-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.subscription-admin-card,
+.subscription-admin-table {
+  background: linear-gradient(180deg, rgba(19, 23, 32, 0.96), rgba(12, 15, 22, 0.98));
+  border: 1px solid rgba(83, 92, 116, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.subscription-admin-card {
+  padding: 22px;
+}
+
+.subscription-admin-card--metric {
+  min-height: 156px;
+}
+
+.subscription-admin-card--metric span,
+.subscription-admin-detail-list span,
+.subscription-admin-table-row span,
+.subscription-admin-table-head span,
+.subscription-admin-list-item span,
+.subscription-admin-copy,
+.subscription-admin-card-head p,
+.subscription-admin-inline-note span,
+.subscription-admin-form label span,
+.subscription-admin-quick-actions button span {
+  color: #9ea8bb;
+}
+
+.subscription-admin-card--metric span {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.subscription-admin-card--metric strong {
+  display: block;
+  margin-top: 10px;
+  color: #f8fafc;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.subscription-admin-card--metric small {
+  display: block;
+  margin-top: 14px;
+  color: #92a0b8;
+  line-height: 1.5;
+}
+
+.subscription-admin-card-head,
+.subscription-admin-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.subscription-admin-card-head h3,
+.subscription-admin-toolbar h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 21px;
+}
+
+.subscription-admin-card-head p,
+.subscription-admin-toolbar p {
+  margin: 8px 0 0;
+  line-height: 1.55;
+}
+
+.subscription-admin-quick-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.subscription-admin-quick-actions button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px 18px;
+  color: #f8fafc;
+  background: rgba(18, 24, 36, 0.95);
+  border: 1px solid rgba(85, 96, 124, 0.45);
+  border-radius: 14px;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.subscription-admin-quick-actions button:hover,
+.subscription-admin-quick-actions button:focus-visible {
+  background: rgba(28, 35, 50, 0.98);
+  border-color: rgba(111, 125, 160, 0.72);
+  transform: translateY(-1px);
+}
+
+.subscription-admin-quick-actions button strong {
+  color: #f8fafc;
+  font-size: 15px;
+}
+
+.subscription-admin-detail-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.subscription-admin-detail-list--split {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.subscription-admin-detail-list div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(82, 91, 114, 0.2);
+}
+
+.subscription-admin-detail-list div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.subscription-admin-detail-list strong,
+.subscription-admin-list-item strong,
+.subscription-admin-table-row strong {
+  color: #f8fafc;
+}
+
+.subscription-admin-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.subscription-admin-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  background: rgba(17, 23, 34, 0.96);
+  border: 1px solid rgba(79, 90, 116, 0.35);
+  border-radius: 14px;
+}
+
+.subscription-admin-list-item strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.subscription-admin-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscription-admin-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.subscription-admin-pill.is-active {
+  color: #d1fae5;
+  background: rgba(5, 150, 105, 0.18);
+}
+
+.subscription-admin-pill.is-approved {
+  color: #dbeafe;
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.subscription-admin-pill.is-warning {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+.subscription-admin-pill.is-danger {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.subscription-admin-pill.is-muted,
+.subscription-admin-pill.is-archived {
+  color: #d1d5db;
+  background: rgba(107, 114, 128, 0.18);
+}
+
+.subscription-admin-pill.is-info {
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.subscription-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.subscription-admin-actions--form {
+  grid-column: 1 / -1;
+}
+
+.subscription-admin-primary-btn,
+.subscription-admin-secondary-btn,
+.subscription-admin-small-btn,
+.subscription-admin-link {
+  border-radius: 12px;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.subscription-admin-primary-btn,
+.subscription-admin-secondary-btn,
+.subscription-admin-small-btn {
+  padding: 11px 16px;
+  border: 1px solid transparent;
+}
+
+.subscription-admin-primary-btn {
+  color: #0f172a;
+  background: #f6c25b;
+}
+
+.subscription-admin-primary-btn:hover,
+.subscription-admin-primary-btn:focus-visible {
+  transform: translateY(-1px);
+  background: #ffd27b;
+}
+
+.subscription-admin-secondary-btn,
+.subscription-admin-small-btn {
+  color: #e6ebf5;
+  background: rgba(15, 20, 29, 0.92);
+  border-color: rgba(90, 102, 130, 0.45);
+}
+
+.subscription-admin-secondary-btn:hover,
+.subscription-admin-secondary-btn:focus-visible,
+.subscription-admin-small-btn:hover,
+.subscription-admin-small-btn:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(25, 31, 44, 0.98);
+  border-color: rgba(127, 142, 175, 0.56);
+}
+
+.subscription-admin-link {
+  padding: 0;
+  color: #f6c25b;
+  background: transparent;
+  border: 0;
+}
+
+.subscription-admin-toolbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscription-admin-toolbar-controls input,
+.subscription-admin-toolbar-controls select,
+.subscription-admin-form input,
+.subscription-admin-form select,
+.subscription-admin-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  color: #f8fafc;
+  background: rgba(11, 16, 24, 0.94);
+  border: 1px solid rgba(83, 94, 120, 0.45);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.subscription-admin-toolbar-controls input,
+.subscription-admin-toolbar-controls select {
+  width: auto;
+  min-width: 180px;
+}
+
+.subscription-admin-toolbar-controls input:focus,
+.subscription-admin-toolbar-controls select:focus,
+.subscription-admin-form input:focus,
+.subscription-admin-form select:focus,
+.subscription-admin-form textarea:focus {
+  border-color: rgba(246, 194, 91, 0.9);
+  box-shadow: 0 0 0 3px rgba(246, 194, 91, 0.12);
+}
+
+.subscription-admin-table {
+  overflow: hidden;
+}
+
+.subscription-admin-table-head,
+.subscription-admin-table-row {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 0.9fr 0.9fr 0.8fr 0.8fr;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.subscription-admin-table-head {
+  background: rgba(16, 22, 32, 0.98);
+  border-bottom: 1px solid rgba(79, 89, 110, 0.35);
+}
+
+.subscription-admin-table-head span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.subscription-admin-table-row + .subscription-admin-table-row {
+  border-top: 1px solid rgba(70, 79, 99, 0.26);
+}
+
+.subscription-admin-table-row strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.subscription-admin-copy {
+  margin: 18px 0 0;
+  line-height: 1.6;
+}
+
+.subscription-admin-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.subscription-admin-tag-list span {
+  padding: 7px 11px;
+  color: #dfe6f4;
+  background: rgba(31, 40, 56, 0.92);
+  border: 1px solid rgba(93, 104, 132, 0.3);
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.subscription-admin-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.subscription-admin-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.subscription-admin-form label.is-wide {
+  grid-column: 1 / -1;
+}
+
+.subscription-admin-form textarea {
+  resize: vertical;
+}
+
+.subscription-admin-checkbox {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(13, 19, 29, 0.92);
+  border: 1px solid rgba(83, 94, 120, 0.35);
+  border-radius: 12px;
+}
+
+.subscription-admin-checkbox input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.subscription-admin-inline-note {
+  grid-column: 1 / -1;
+  padding: 16px 18px;
+  background: rgba(17, 23, 34, 0.96);
+  border: 1px solid rgba(79, 89, 110, 0.35);
+  border-radius: 14px;
+}
+
+.subscription-admin-inline-note strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #f8fafc;
+}
+
+.subscription-admin-inline-note code {
+  color: #f6c25b;
+}
+
+.subscription-admin-empty {
+  padding: 22px;
+  color: #a9b3c6;
+  text-align: center;
+  background: rgba(16, 21, 31, 0.95);
+  border: 1px dashed rgba(87, 98, 123, 0.42);
+  border-radius: 18px;
+}
+
+.subscription-admin-notice {
+  padding: 14px 18px;
+  color: #ecfdf5;
+  background: rgba(5, 150, 105, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  border-radius: 14px;
+}
+
+.subscription-admin-notice.warning {
+  color: #fef3c7;
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.34);
+}
+
+@media (max-width: 1320px) {
+  .subscription-admin-grid--cards,
+  .subscription-admin-grid--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1080px) {
+  .subscription-admin-grid--two,
+  .subscription-admin-grid--three,
+  .subscription-admin-grid--cards,
+  .subscription-admin-form {
+    grid-template-columns: 1fr;
+  }
+
+  .subscription-admin-table-head,
+  .subscription-admin-table-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .subscription-admin-card,
+  .subscription-admin-table,
+  .subscription-admin-empty {
+    border-radius: 16px;
+  }
+
+  .subscription-admin-card,
+  .subscription-admin-table-head,
+  .subscription-admin-table-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .subscription-admin-card-head,
+  .subscription-admin-toolbar,
+  .subscription-admin-list-item,
+  .subscription-admin-detail-list div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .subscription-admin-table-head,
+  .subscription-admin-table-row {
+    grid-template-columns: 1fr;
+  }
+
+  .subscription-admin-toolbar-controls {
+    width: 100%;
+  }
+
+  .subscription-admin-toolbar-controls input,
+  .subscription-admin-toolbar-controls select,
+  .subscription-admin-primary-btn,
+  .subscription-admin-secondary-btn,
+  .subscription-admin-small-btn {
+    width: 100%;
+  }
+
+  .subscription-admin-detail-list--split {
+    grid-template-columns: 1fr;
+  }
+}
