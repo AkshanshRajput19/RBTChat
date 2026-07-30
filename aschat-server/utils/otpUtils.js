@@ -134,7 +134,14 @@ const sendOtpEmail = async (recipient, code) => {
   }
 
   try {
-    const transporter = nodemailer.createTransport(transporterOptions);
+       const transporter = nodemailer.createTransport({
+       ...transporterOptions,
+       connectionTimeout: 10000,
+       greetingTimeout: 10000,
+       socketTimeout: 10000,
+       debug: true,
+       logger: true, 
+        });
 
     await transporter.sendMail({
       from: fromAddress,
