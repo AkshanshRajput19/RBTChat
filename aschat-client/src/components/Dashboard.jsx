@@ -147,21 +147,21 @@ function Dashboard({ currentUser, onOpenChats }) {
 
   const plans = [
     {
-      id: "free",
-      name: "Free",
-      price: "$0",
+      id: "starter",
+      name: "Starter",
+      price: "₹399/mo",
       features: ["Basic chat", "5 users", "Support bot (limited)"],
     },
     {
-      id: "premium",
-      name: "Premium",
-      price: "$29/mo",
+      id: "pro",
+      name: "Pro",
+      price: "₹699/mo",
       features: ["All features", "50 users", "AI insights", "Sales forecasting"],
     },
     {
       id: "enterprise",
       name: "Enterprise",
-      price: "$99/mo",
+      price: "₹999/mo",
       features: ["Unlimited users", "Custom AI", "Dedicated support", "API access"],
     },
   ];
