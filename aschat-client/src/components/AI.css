@@ -46,6 +46,12 @@
   box-shadow: 0 14px 32px rgba(79, 70, 229, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.new-chat-btn{
+    width: calc(100% - 70px);
+    margin-left: 70px;
+    height: 54px;
+    border-radius: 14px;
+}
 
 .new-chat-btn:hover {
   transform: translateY(-2px);
@@ -581,4 +587,40 @@
 .ai-page.light {
     background:#f5f7fb;
     color:#111827;
+}
+.toggle-sidebar-btn{
+    position:absolute;
+    top:18px;
+    left:20px;
+    width:46px;
+    height:46px;
+    border:none;
+    border-radius:10px;
+    background:#25293d;
+    color:#fff;
+    cursor:pointer;
+    font-size:22px;
+    z-index:1000;
+}
+
+.ai-container{
+    position:relative;
+}
+
+.ai-sidebar{
+    width:320px;
+    transition:.35s ease;
+    overflow:hidden;
+}
+
+.ai-sidebar.collapsed{
+    width:0;
+    padding:0;
+    border:none;
+    opacity:0;
+}
+
+.ai-main{
+    transition:.35s ease;
+    width:100%;
 }

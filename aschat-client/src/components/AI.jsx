@@ -117,6 +117,7 @@ export default function AI({ currentUser }) {
   const [serviceWarning, setServiceWarning] = useState("");
   const [config, setConfig] = useState(null);
   const [selectedModel, setSelectedModel] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -286,8 +287,8 @@ export default function AI({ currentUser }) {
 
   return (
     <div className={`ai-page ${document.documentElement.dataset.theme === "light" ? "light" : "dark"}`}>
-      <div className="ai-container">
-        <aside className="ai-sidebar">
+       <div className={`ai-container ${sidebarOpen ? "" : "sidebar-hidden"}`}>
+        <aside className={`ai-sidebar ${sidebarOpen ? "" : "collapsed"}`}>
           <button className="new-chat-btn" type="button" onClick={handleNewChat}>
             + New Chat
           </button>
@@ -332,6 +333,12 @@ export default function AI({ currentUser }) {
         </aside>
 
         <main className="ai-main">
+          <button
+    className="toggle-sidebar-btn"
+    onClick={() => setSidebarOpen(!sidebarOpen)}
+>
+    {sidebarOpen ? "☰" : "☰"}
+</button>
           <div className="ai-header">
             <div>
               <h1>RBT AI</h1>

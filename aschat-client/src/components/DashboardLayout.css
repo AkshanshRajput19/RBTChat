@@ -507,7 +507,7 @@
 
 .dashboard-home {
   height: 100%;
-  padding: 28px;
+  padding: 0 28px 28px;
   overflow-y: auto;
   background:
     radial-gradient(circle at 82% 12%, #6d28d91c, transparent 30%),
@@ -1905,4 +1905,29 @@
 
 :root[data-theme="light"] .users-state.error {
   color: var(--app-danger);
+}
+.dashboard-header{
+    margin-bottom:0;
+}
+
+.dashboard-home{
+    margin-top:1;
+    padding-top:1;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  min-height: 82px;
+
+  padding: 0 24px;
+
+  background: #121620;
+  border: 1px solid rgba(255,255,255,0.06);
+
+  border-radius: 0;        /* <-- Sharp corners */
+  box-shadow: none;        /* Optional */
 }

@@ -1051,39 +1051,8 @@ function Chat({ currentUser, socket }) {
     </button>
 
     <div className="more-menu-wrapper">
-  <button
-    type="button"
-    className="icon-button"
-    onClick={() => setShowMoreMenu(!showMoreMenu)}
-  >
-    ⋮
-  </button>
 
-  {showMoreMenu && (
-    <div className="more-menu">
-
-      <button>Catalogue</button>
-      <button>Communities</button>
-      <button>Lists</button>
-
-      <button>Advertisements</button>
-
-      <button>Starred Messages</button>
-
-      <button>Select Chats</button>
-
-      <button>Mark all as read</button>
-      
-      <button>Settings</button>
-
-      <hr />
-
-      <button>App Lock</button>
-
-      <button className="logout">Logout</button>
-
-    </div>
-  )}
+  
 </div>
 
   </div>
