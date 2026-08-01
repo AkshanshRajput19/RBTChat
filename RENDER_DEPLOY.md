@@ -27,6 +27,7 @@ This repo is set up to deploy on Render as:
 
 - The backend is configured with a persistent disk for `/uploads`.
 - Render persistent disks require a paid web service plan, so the backend is set to `starter`.
+- Render announced on September 16, 2025 that free web services would block outbound SMTP on ports `25`, `465`, and `587`, with rollout completed by September 26, 2025. If your backend is running on Render `free`, Gmail/SMTP OTP delivery will time out even when the credentials are correct.
 - The frontend can stay on the free static plan.
 - If you want email OTP, SMTP, Gmail, or Twilio-based features in production, add the corresponding environment variables in the backend service after deploy.
 
@@ -40,6 +41,9 @@ This repo is set up to deploy on Render as:
 
 ## Optional backend env vars
 
+- `EMAIL_TRANSPORT` (`auto`, `resend`, `smtp`, or `gmail`)
+- `RESEND_API_KEY`
+- `RESEND_FROM`
 - `SMTP_HOST`
 - `SMTP_PORT`
 - `SMTP_USER`
@@ -59,3 +63,15 @@ Check:
 - Backend responds at `/api/test`
 - Registration and login work
 - Uploads, stories, and media messages work
+
+## OTP on Render free
+
+If you created `aschat-backend` manually on Render `free`, you have two workable options:
+
+1. Change the backend plan to `starter` or higher and keep using Gmail/SMTP.
+2. Keep the backend on `free`, then set:
+   - `EMAIL_TRANSPORT=resend`
+   - `RESEND_API_KEY=...`
+   - `RESEND_FROM=RBTChat <noreply@yourdomain.com>`
+
+The frontend does not need any OTP-specific changes for either option.

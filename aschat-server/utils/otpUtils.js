@@ -3,6 +3,7 @@ const twilio = require("twilio");
 const Tenant = require("../models/Tenant");
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_TIMEOUT_MS = 10000;
 
 const createOtp = () => String(Math.floor(100000 + Math.random() * 900000));
 
@@ -10,6 +11,67 @@ const normalizeGmailAppPassword = (value) =>
   String(value || "")
     .replace(/\s+/g, "")
     .trim();
+
+const createOtpEmailContent = (code) => ({
+  subject: "RBTChat Verification Code",
+  html: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`,
+  text: `Your verification code is ${code}. This code expires in 10 minutes.`,
+});
+
+const sendEmailWithResend = async ({
+  apiKey,
+  fromAddress,
+  toAddress,
+  subject,
+  html,
+  text,
+}) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [toAddress],
+        subject,
+        html,
+        text,
+      }),
+      signal: controller.signal,
+    });
+
+    const responseText = await response.text();
+    let payload = null;
+
+    if (responseText) {
+      try {
+        payload = JSON.parse(responseText);
+      } catch {
+        payload = responseText;
+      }
+    }
+
+    if (!response.ok) {
+      const error = new Error(
+        `Resend request failed with status ${response.status}${
+          payload ? `: ${typeof payload === "string" ? payload : JSON.stringify(payload)}` : ""
+        }`
+      );
+      error.code = "RESEND_SEND_FAILED";
+      throw error;
+    }
+
+    return payload;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 const getTenantConfig = async (tenantId) => {
   const normalizedTenantId = String(tenantId || "default").trim() || "default";
@@ -93,27 +155,62 @@ const sendOtpEmail = async (recipient, code) => {
   }
 
   const tenant = await getTenantConfig(recipient?.tenantId);
+  const resendApiKey = String(process.env.RESEND_API_KEY || "").trim();
+  const resendFrom = String(process.env.RESEND_FROM || "").trim();
+  const emailTransport = String(process.env.EMAIL_TRANSPORT || "auto")
+    .trim()
+    .toLowerCase();
   const host = tenant?.smtpHost || process.env.SMTP_HOST;
   const port = Number(tenant?.smtpPort || process.env.SMTP_PORT || 587);
   const user = tenant?.smtpUser || process.env.SMTP_USER;
   const pass = tenant?.smtpPass || process.env.SMTP_PASS;
   let fromAddress = tenant?.smtpFrom || process.env.SMTP_FROM || user;
+  const emailContent = createOtpEmailContent(code);
 
   let transporterOptions;
+  const hasResendConfig = Boolean(resendApiKey && resendFrom);
   const hasSmtpConfig = Boolean(host && user && pass);
   const gmailUser = String(process.env.GMAIL_USER || "").trim();
   const gmailPass = normalizeGmailAppPassword(process.env.GMAIL_PASS);
   const hasGmailConfig = Boolean(gmailUser && gmailPass);
 
-  if (hasSmtpConfig) {
+  if (
+    (emailTransport === "auto" || emailTransport === "resend") &&
+    hasResendConfig
+  ) {
+    try {
+      await sendEmailWithResend({
+        apiKey: resendApiKey,
+        fromAddress: resendFrom,
+        toAddress: email,
+        ...emailContent,
+      });
+      return true;
+    } catch (error) {
+      console.error("========== OTP EMAIL API ERROR ==========");
+      console.error(error);
+      console.error("Code:", error.code);
+      console.error("Message:", error.message);
+      console.error("=========================================");
+
+      if (emailTransport === "resend") {
+        return false;
+      }
+    }
+  }
+
+  if ((emailTransport === "auto" || emailTransport === "smtp") && hasSmtpConfig) {
     transporterOptions = {
       host,
       port,
-     secure: false,
+      secure: port === 465,
       requireTLS: true,
       auth: { user, pass },
     };
-  } else if (hasGmailConfig) {
+  } else if (
+    (emailTransport === "auto" || emailTransport === "gmail") &&
+    hasGmailConfig
+  ) {
     transporterOptions = {
       host: "smtp.gmail.com",
       port: 465,
@@ -128,32 +225,42 @@ const sendOtpEmail = async (recipient, code) => {
 
   if (!transporterOptions) {
     console.warn(
-      `[OTP] Email delivery is not configured for ${email}. SMTP config present=${hasSmtpConfig}, Gmail config present=${hasGmailConfig}`
+      `[OTP] Email delivery is not configured for ${email}. Transport=${emailTransport}, Resend config present=${hasResendConfig}, SMTP config present=${hasSmtpConfig}, Gmail config present=${hasGmailConfig}`
     );
     return false;
   }
 
   try {
-       const transporter = nodemailer.createTransport({
-       ...transporterOptions,
-       connectionTimeout: 10000,
-       greetingTimeout: 10000,
-       socketTimeout: 10000,
-       debug: true,
-       logger: true, 
-        });
+    const transporter = nodemailer.createTransport({
+      ...transporterOptions,
+      connectionTimeout: EMAIL_TIMEOUT_MS,
+      greetingTimeout: EMAIL_TIMEOUT_MS,
+      socketTimeout: EMAIL_TIMEOUT_MS,
+      debug: true,
+      logger: true,
+    });
 
     await transporter.sendMail({
       from: fromAddress,
       to: email,
-      subject: "RBTChat Verification Code",
-      html: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 10 minutes.</p>`,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
     });
 
     return true;
   } catch (error) {
     console.error("========== OTP ERROR ==========");
     console.error(error);
+    if (
+      ["ETIMEDOUT", "ESOCKET", "ECONNECTION", "ENETUNREACH"].includes(
+        String(error.code || "")
+      )
+    ) {
+      console.error(
+        "Hint: outbound SMTP is blocked on Render free web services. Use a paid web service or set EMAIL_TRANSPORT=resend with RESEND_API_KEY and RESEND_FROM."
+      );
+    }
     console.error("Code:", error.code);
     console.error("Message:", error.message);
     console.error("Response:", error.response);
@@ -165,13 +272,17 @@ const sendOtpEmail = async (recipient, code) => {
 
 const hasEmailOtpConfig = async (recipient) => {
   const tenant = await getTenantConfig(recipient?.tenantId);
+  const resendApiKey = String(process.env.RESEND_API_KEY || "").trim();
+  const resendFrom = String(process.env.RESEND_FROM || "").trim();
   const host = tenant?.smtpHost || process.env.SMTP_HOST;
   const user = tenant?.smtpUser || process.env.SMTP_USER;
   const pass = tenant?.smtpPass || process.env.SMTP_PASS;
   const gmailUser = String(process.env.GMAIL_USER || "").trim();
   const gmailPass = normalizeGmailAppPassword(process.env.GMAIL_PASS);
 
-  return Boolean((host && user && pass) || (gmailUser && gmailPass));
+  return Boolean(
+    (resendApiKey && resendFrom) || (host && user && pass) || (gmailUser && gmailPass)
+  );
 };
 
 const sendOtpMobile = async (recipient, code) => {

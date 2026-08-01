@@ -17,6 +17,7 @@ This project can now run on localhost without using deployed services.
    - or `GOOGLE_API_KEY=your_key_here`
    - optional: `GEMINI_MODEL=gemini-3.5-flash`
 4. If you want OTP emails locally, add one of these to `aschat-server/.env.local`:
+   - `RESEND_API_KEY` and `RESEND_FROM`
    - `GMAIL_USER` and `GMAIL_PASS` using a Gmail app password
    - or `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, `SMTP_USER`, and `SMTP_PASS`
 5. If mail or SMS is not configured locally, the pricing OTP flow now falls back to a development OTP shown in the UI unless `ALLOW_DEV_OTP_FALLBACK=false`.
