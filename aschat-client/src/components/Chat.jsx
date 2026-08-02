@@ -1209,23 +1209,6 @@ function Chat({ currentUser, socket }) {
               })}
 
               <div className="sidebar-ai-card-bottom">
-                <button
-                  type="button"
-                  className="sidebar-ai-button"
-                  onClick={toggleAiPanel}
-                  disabled={!selectedUser}
-                >
-                  {isLoadingAi ? "Generating..." : showAiPanel ? "Close RBT-AI" : "RBT-AI"}
-                </button>
-
-                <button
-                  type="button"
-                  className="sidebar-status-button"
-                  onClick={() => setShowAiPanel(false)}
-                >
-                  Status
-                </button>
-
                 {showAiPanel && aiError && <p className="sidebar-ai-error">{aiError}</p>}
                 {showAiPanel && aiSuggestions.length > 0 && (
                   <div className="sidebar-ai-suggestions">
