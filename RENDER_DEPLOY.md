@@ -75,3 +75,4 @@ If you created `aschat-backend` manually on Render `free`, you have two workable
    - `RESEND_FROM=RBTChat <noreply@yourdomain.com>`
 
 The frontend does not need any OTP-specific changes for either option.
+For Resend delivery to real user inboxes, `RESEND_FROM` must use a domain you have verified in Resend. Their default `resend.dev` sender is only for limited testing.

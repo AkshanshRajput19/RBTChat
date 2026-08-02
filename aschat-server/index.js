@@ -57,6 +57,7 @@ app.get("/api/test", (req, res) => {
 });
 
 const io = new Server(httpServer, { cors: { origin: CLIENT_URL } });
+app.set("io", io);
 const onlineUsers = new Map();
 
 io.use((socket, next) => {

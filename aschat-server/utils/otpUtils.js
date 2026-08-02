@@ -35,6 +35,7 @@ const sendEmailWithResend = async ({
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        "User-Agent": "rbtchat-backend/1.0",
       },
       body: JSON.stringify({
         from: fromAddress,

@@ -292,6 +292,54 @@ function Chat({ currentUser, socket }) {
   }, [socket]);
 
   useEffect(() => {
+    if (!socket || conversationMode !== "direct" || !selectedUser) {
+      return undefined;
+    }
+
+    const currentUserId = String(currentUser.id);
+    const selectedUserId = String(selectedUser._id);
+
+    const syncMessageInOpenConversation = (incomingMessage) => {
+      if (!incomingMessage?._id) {
+        return;
+      }
+
+      const senderId = String(incomingMessage.sender?._id || incomingMessage.sender || "");
+      const receiverId = String(incomingMessage.receiver?._id || incomingMessage.receiver || "");
+      const belongsToOpenConversation =
+        (senderId === currentUserId && receiverId === selectedUserId) ||
+        (senderId === selectedUserId && receiverId === currentUserId);
+
+      if (!belongsToOpenConversation) {
+        return;
+      }
+
+      setMessages((currentMessages) => {
+        const existingIndex = currentMessages.findIndex(
+          (messageItem) => messageItem._id === incomingMessage._id
+        );
+
+        if (existingIndex === -1) {
+          return [...currentMessages, incomingMessage];
+        }
+
+        return currentMessages.map((messageItem) =>
+          messageItem._id === incomingMessage._id ? incomingMessage : messageItem
+        );
+      });
+      setError("");
+    };
+
+    socket.on("direct-message", syncMessageInOpenConversation);
+    socket.on("message-updated", syncMessageInOpenConversation);
+
+    return () => {
+      socket.off("direct-message", syncMessageInOpenConversation);
+      socket.off("message-updated", syncMessageInOpenConversation);
+    };
+  }, [socket, conversationMode, selectedUser, currentUser.id]);
+
+  useEffect(() => {
     if (!showAttachMenu && !showComposerHub) {
       return undefined;
     }

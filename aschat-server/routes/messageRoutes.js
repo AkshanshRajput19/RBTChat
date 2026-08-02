@@ -13,6 +13,20 @@ const uploadsDirectory = uploadsRoot;
 
 const getTenantId = (req) => String(req.tenantId || "").trim() || "default";
 
+const emitDirectMessageEvent = (req, eventName, message) => {
+  const io = req.app.get("io");
+
+  if (!io || !message?.sender || !message?.receiver) {
+    return;
+  }
+
+  const senderId = String(message.sender);
+  const receiverId = String(message.receiver);
+
+  io.to(`user:${senderId}`).emit(eventName, message);
+  io.to(`user:${receiverId}`).emit(eventName, message);
+};
+
 const tenantScopeQuery = (tenantId) => ({
   $or: [
     { tenantId },
@@ -177,6 +191,8 @@ router.post("/", async (req, res) => {
       text
     });
 
+    emitDirectMessageEvent(req, "direct-message", message);
+
     return res.status(201).json({ success: true, message });
   } catch (error) {
     console.error("Send message error:", error);
@@ -253,6 +269,8 @@ router.post("/media", upload.single("media"), async (req, res) => {
       fileSize: req.file.size
     });
 
+    emitDirectMessageEvent(req, "direct-message", message);
+
     return res.status(201).json({ success: true, message });
   } catch (error) {
     if (req.file?.path) {
@@ -326,6 +344,7 @@ router.delete("/:messageId", async (req, res) => {
     }
 
     await message.save();
+    emitDirectMessageEvent(req, "message-updated", message);
     return res.json({ success: true, message });
   } catch (error) {
     console.error("Delete message error:", error);
