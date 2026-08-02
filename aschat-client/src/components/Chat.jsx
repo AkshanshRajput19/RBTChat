@@ -1077,7 +1077,9 @@ function Chat({ currentUser, socket }) {
     <div className="chat-container">
       <aside className="sidebar">
         <header className="brand-header">
-          <div className="brand-logo">RC</div>
+          <div className="brand-logo">
+            <img src="/image.png" alt="Company logo" />
+          </div>
           <div className="brand-details">
             <h1>RBTChat</h1>
             <p>{currentUser.name}</p>
@@ -1364,7 +1366,9 @@ function Chat({ currentUser, socket }) {
                   <div className="chat-loading">Loading group conversation...</div>
                 ) : messages.length === 0 ? (
                   <div className="empty-chat">
-                    <div className="empty-chat-logo">RC</div>
+                    <div className="empty-chat-logo">
+                      <img src="/image.png" alt="Company logo" />
+                    </div>
                     <h2>Start the group chat</h2>
                     <p>Send a message to {selectedGroup.name}.</p>
                   </div>
@@ -1433,7 +1437,9 @@ function Chat({ currentUser, socket }) {
             </>
           ) : (
             <div className="welcome-screen">
-              <div className="welcome-logo">RC</div>
+              <div className="welcome-logo">
+                <img src="/image.png" alt="Company logo" />
+              </div>
               <h1>RBTChat</h1>
               <p>Select a group to begin chatting.</p>
             </div>
@@ -1495,7 +1501,9 @@ function Chat({ currentUser, socket }) {
                 <div className="chat-loading">Loading conversation...</div>
               ) : messages.length === 0 ? (
                 <div className="empty-chat">
-                  <div className="empty-chat-logo">RC</div>
+                  <div className="empty-chat-logo">
+                    <img src="/image.png" alt="Company logo" />
+                  </div>
                   <h2>Start a conversation</h2>
                   <p>Send your first message to {selectedUser.name}.</p>
                 </div>

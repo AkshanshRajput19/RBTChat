@@ -24,8 +24,7 @@ function AuthLayout({
       <header className="auth-header">
         <div className="auth-brand">
           <div className="auth-brand-mark">
-            <span />
-            <span />
+            <img src="/image.png" alt="Company logo" />
           </div>
           <div className="auth-brand-copy">
             <strong>RBTChat</strong>
@@ -37,6 +36,7 @@ function AuthLayout({
           <button type="button" className="auth-home-btn" onClick={onReturnHome}>
             Back to home
           </button>
+
 
           <nav className="auth-nav" aria-label="Authentication">
             <button

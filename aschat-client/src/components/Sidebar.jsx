@@ -147,7 +147,9 @@ function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
 
       <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
         <div className="dashboard-brand">
-          <div className="dashboard-brand-mark">RC</div>
+          <div className="dashboard-brand-mark">
+            <img src="/image.png" alt="Company logo" />
+          </div>
           <div>
             <strong>RBTChat</strong>
             <span>Connect instantly</span>
