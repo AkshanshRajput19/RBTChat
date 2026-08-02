@@ -508,6 +508,8 @@ function PublicLanding({ onLogin, onRegister }) {
         <div className="public-footer-logo-box">
           <img src="/image.png" alt="Company logo" />
         </div>
+        <div>
+          <h2>REALBELL</h2>
           <span>Campaign Platform</span>
         </div>
       </div>
@@ -529,79 +531,59 @@ function PublicLanding({ onLogin, onRegister }) {
     </div>
 
     <div className="public-footer-links">
-
       <h3>Product</h3>
-
       <a href="#">Features</a>
       <a href="#">Pricing</a>
       <a href="#">Campaigns</a>
       <a href="#">Automation</a>
       <a href="#">Analytics</a>
-
     </div>
 
     <div className="public-footer-links">
-
       <h3>Company</h3>
-      
-
       <a href="#">About</a>
       <a href="#">Blog</a>
       <a href="#">Careers</a>
       <a href="#">Partners</a>
       <a href="#">Contact</a>
-      
-
     </div>
+
     <div className="public-footer-links">
+      <h3>Support</h3>
+      <a href="#">Help Center</a>
+      <a href="#">Documentation</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+      <a href="#">FAQs</a>
+    </div>
 
-  <h3>Support</h3>
-
-  <a href="#">Help Center</a>
-  <a href="#">Documentation</a>
-  <a href="#">Privacy Policy</a>
-  <a href="#">Terms & Conditions</a>
-  <a href="#">FAQs</a>
-
-</div>
-
-<div className="public-footer-contact">
-
-  <h3>Contact</h3>
-
-  <div className="public-footer-contact-item">
-    <FaEnvelope />
-    <span>akshansh.singh@realbell.in</span>
+    <div className="public-footer-contact">
+      <h3>Contact</h3>
+      <div className="public-footer-contact-item">
+        <FaEnvelope />
+        <span>akshansh.singh@realbell.in</span>
+      </div>
+      <div className="public-footer-contact-item">
+        <FaPhone />
+        <span>+91 6377425973</span>
+      </div>
+      <p className="public-footer-desc">
+        Empowering businesses with AI-powered messaging,
+        automation and customer engagement solutions.
+      </p>
+    </div>
   </div>
 
-  <div className="public-footer-contact-item">
-    <FaPhone />
-    <span>+91 6377425973</span>
+  <div className="public-footer-bottom">
+    <p>
+      © {new Date().getFullYear()} REALBELL Campaign. All Rights Reserved.
+    </p>
+    <div className="public-footer-bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Cookies</a>
+    </div>
   </div>
-
-  <p className="public-footer-desc">
-    Empowering businesses with AI-powered messaging,
-    automation and customer engagement solutions.
-  </p>
-
-</div>
-
-</div>
-
-<div className="public-footer-bottom">
-
-  <p>
-    © {new Date().getFullYear()} REALBELL Campaign. All Rights Reserved.
-  </p>
-
-  <div className="public-footer-bottom-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Cookies</a>
-  </div>
-
-</div>
-
 </footer>
     
    
