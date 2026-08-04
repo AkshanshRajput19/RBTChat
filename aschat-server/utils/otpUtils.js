@@ -212,6 +212,7 @@ const sendOtpEmail = async (recipient, code) => {
   }
 
   const tenant = await getTenantConfig(recipient?.tenantId);
+  const resendApiKey = String(process.env.RESEND_API_KEY || "").trim();
   const brevoApiKey = String(process.env.BREVO_API_KEY || "").trim();
   const brevoFrom = String(process.env.BREVO_FROM || "").trim();
   const resendFrom = String(process.env.RESEND_FROM || "").trim();
