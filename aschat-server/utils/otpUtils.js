@@ -73,6 +73,62 @@ const sendEmailWithResend = async ({
     clearTimeout(timeoutId);
   }
 };
+const sendEmailWithBrevo = async ({
+  apiKey,
+  fromAddress,
+  fromName,
+  toAddress,
+  subject,
+  html,
+  text,
+}) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
+
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: fromName || "RBTChat", email: fromAddress },
+        to: [{ email: toAddress }],
+        subject,
+        htmlContent: html,
+        textContent: text,
+      }),
+      signal: controller.signal,
+    });
+
+    const responseText = await response.text();
+    let payload = null;
+
+    if (responseText) {
+      try {
+        payload = JSON.parse(responseText);
+      } catch {
+        payload = responseText;
+      }
+    }
+
+    if (!response.ok) {
+      const error = new Error(
+        `Brevo request failed with status ${response.status}${
+          payload ? `: ${typeof payload === "string" ? payload : JSON.stringify(payload)}` : ""
+        }`
+      );
+      error.code = "BREVO_SEND_FAILED";
+      throw error;
+    }
+
+    return payload;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 const getTenantConfig = async (tenantId) => {
   const normalizedTenantId = String(tenantId || "default").trim() || "default";
@@ -156,7 +212,8 @@ const sendOtpEmail = async (recipient, code) => {
   }
 
   const tenant = await getTenantConfig(recipient?.tenantId);
-  const resendApiKey = String(process.env.RESEND_API_KEY || "").trim();
+  const brevoApiKey = String(process.env.BREVO_API_KEY || "").trim();
+  const brevoFrom = String(process.env.BREVO_FROM || "").trim();
   const resendFrom = String(process.env.RESEND_FROM || "").trim();
   const emailTransport = String(process.env.EMAIL_TRANSPORT || "auto")
     .trim()
@@ -174,6 +231,35 @@ const sendOtpEmail = async (recipient, code) => {
   const gmailUser = String(process.env.GMAIL_USER || "").trim();
   const gmailPass = normalizeGmailAppPassword(process.env.GMAIL_PASS);
   const hasGmailConfig = Boolean(gmailUser && gmailPass);
+
+
+  const hasBrevoConfig = Boolean(brevoApiKey && brevoFrom);
+
+  if (
+    (emailTransport === "auto" || emailTransport === "brevo") &&
+    hasBrevoConfig
+  ) {
+    try {
+      await sendEmailWithBrevo({
+        apiKey: brevoApiKey,
+        fromAddress: brevoFrom,
+        fromName: "RBTChat",
+        toAddress: email,
+        ...emailContent,
+      });
+      return true;
+    } catch (error) {
+      console.error("========== OTP EMAIL API ERROR (Brevo) ==========");
+      console.error(error);
+      console.error("Code:", error.code);
+      console.error("Message:", error.message);
+      console.error("=========================================");
+
+      if (emailTransport === "brevo") {
+        return false;
+      }
+    }
+  }
 
   if (
     (emailTransport === "auto" || emailTransport === "resend") &&
