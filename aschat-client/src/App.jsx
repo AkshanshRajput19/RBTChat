@@ -9,6 +9,7 @@ import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import SubscriptionManagement from "./components/SubscriptionManagement";
+import Tools from "./components/Tools";
 import Users from "./components/Users";
 import { UNAUTHORIZED_EVENT } from "./api";
 import { getSettingsSection, isSettingsLikePage } from "./components/settingsSections";
@@ -179,6 +180,8 @@ function App() {
     <Users currentUser={session.user} />
   ) : activePage === "ai" ? (
     <AI currentUser={session.user} />
+  ) : activePage === "tools" ? (
+    <Tools />
   ) : isSubscriptionPage ? (
     <SubscriptionManagement
       currentUser={session.user}

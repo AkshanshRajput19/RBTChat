@@ -78,6 +78,15 @@ function SettingIcon() {
   );
 }
 
+function ToolsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M14.7 5.3a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-2.6 2.6-1.4-1.4 1.2-1.2-3.3-3.3-1.2 1.2-1.4-1.4 2.6-2.6a1 1 0 0 1 1.4 0z" />
+      <path d="M11.1 8.9l3.3 3.3-7.8 7.8a1 1 0 0 1-1.4 0l-2.6-2.6a1 1 0 0 1 0-1.4l7.8-7.8z" />
+    </svg>
+  );
+}
+
 function CustomDomainIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -147,9 +156,7 @@ function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
 
       <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
         <div className="dashboard-brand">
-          <div className="dashboard-brand-mark">
-            <img src="/image.png" alt="Company logo" />
-          </div>
+          <div className="dashboard-brand-mark">RC</div>
           <div>
             <strong>RBTChat</strong>
             <span>Connect instantly</span>
@@ -272,6 +279,13 @@ function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
   <SettingIcon />
   <span>Settings</span>
 </button>
+          <button
+            className={activePage === "tools" ? "active" : ""}
+            onClick={() => navigate("tools")}
+          >
+            <ToolsIcon />
+            <span>Tools</span>
+          </button>
        </nav>
         
       </aside>

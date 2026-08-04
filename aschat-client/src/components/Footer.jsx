@@ -24,7 +24,7 @@ function Footer() {
           <div className="footer-logo">
 
             <div className="footer-logo-box">
-              <img src="/image.png" alt="Company logo" />
+              RB
             </div>
 
             <div>

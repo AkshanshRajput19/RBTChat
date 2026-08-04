@@ -190,7 +190,8 @@ function PublicLanding({ onLogin, onRegister }) {
         <div className="public-nav">
           <div className="public-brand">
             <div className="public-brand-mark">
-              <img src="/image.png" alt="Company logo" />
+              <span />
+              <span />
             </div>
           <div className="public-brand-copy">
             <strong>RBTChat</strong>
@@ -505,9 +506,7 @@ function PublicLanding({ onLogin, onRegister }) {
     <div className="public-footer-about">
 
       <div className="public-footer-logo">
-        <div className="public-footer-logo-box">
-          <img src="/image.png" alt="Company logo" />
-        </div>
+        <div className="public-footer-logo-box">RB</div>
         <div>
           <h2>REALBELL</h2>
           <span>Campaign Platform</span>

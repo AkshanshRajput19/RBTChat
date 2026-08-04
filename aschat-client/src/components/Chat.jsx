@@ -232,6 +232,7 @@ function Chat({ currentUser, socket }) {
   const [message, setMessage] = useState("");
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showComposerHub, setShowComposerHub] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [composerTab, setComposerTab] = useState("emoji");
   const [composerSearch, setComposerSearch] = useState("");
   const [messages, setMessages] = useState([]);
@@ -247,7 +248,6 @@ function Chat({ currentUser, socket }) {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [conversationMode, setConversationMode] = useState("direct");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
-  const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupMemberIds, setGroupMemberIds] = useState([]);
   const [showGroupAdminPanel, setShowGroupAdminPanel] = useState(false);
@@ -340,7 +340,7 @@ function Chat({ currentUser, socket }) {
   }, [socket, conversationMode, selectedUser, currentUser.id]);
 
   useEffect(() => {
-    if (!showAttachMenu && !showComposerHub) {
+    if (!showAttachMenu && !showComposerHub && !showMoreMenu) {
       return undefined;
     }
 
@@ -354,6 +354,7 @@ function Chat({ currentUser, socket }) {
 
       setShowAttachMenu(false);
       setShowComposerHub(false);
+      setShowMoreMenu(false);
     };
 
     const handleEscape = (event) => {
@@ -1077,9 +1078,7 @@ function Chat({ currentUser, socket }) {
     <div className="chat-container">
       <aside className="sidebar">
         <header className="brand-header">
-          <div className="brand-logo">
-            <img src="/image.png" alt="Company logo" />
-          </div>
+          <div className="brand-logo">RC</div>
           <div className="brand-details">
             <h1>RBTChat</h1>
             <p>{currentUser.name}</p>
@@ -1100,10 +1099,40 @@ function Chat({ currentUser, socket }) {
       +
     </button>
 
-    <div className="more-menu-wrapper">
+    <div className="sidebar-more-menu-wrapper">
+      <button
+        type="button"
+        className="icon-button"
+        title="More"
+        onClick={() => setShowMoreMenu((open) => !open)}
+      >
+        ⋯
+      </button>
 
-  
-</div>
+      <div className={`sidebar-more-menu ${showMoreMenu ? "open" : ""}`}>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Advertise
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          New Group
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Communities
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Lists
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Linked Devices
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Starred
+        </button>
+        <button type="button" onClick={() => setShowMoreMenu(false)}>
+          Settings
+        </button>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -1366,9 +1395,7 @@ function Chat({ currentUser, socket }) {
                   <div className="chat-loading">Loading group conversation...</div>
                 ) : messages.length === 0 ? (
                   <div className="empty-chat">
-                    <div className="empty-chat-logo">
-                      <img src="/image.png" alt="Company logo" />
-                    </div>
+                    <div className="empty-chat-logo">RC</div>
                     <h2>Start the group chat</h2>
                     <p>Send a message to {selectedGroup.name}.</p>
                   </div>
@@ -1437,9 +1464,7 @@ function Chat({ currentUser, socket }) {
             </>
           ) : (
             <div className="welcome-screen">
-              <div className="welcome-logo">
-                <img src="/image.png" alt="Company logo" />
-              </div>
+              <div className="welcome-logo">RC</div>
               <h1>RBTChat</h1>
               <p>Select a group to begin chatting.</p>
             </div>
@@ -1501,9 +1526,7 @@ function Chat({ currentUser, socket }) {
                 <div className="chat-loading">Loading conversation...</div>
               ) : messages.length === 0 ? (
                 <div className="empty-chat">
-                  <div className="empty-chat-logo">
-                    <img src="/image.png" alt="Company logo" />
-                  </div>
+                  <div className="empty-chat-logo">RC</div>
                   <h2>Start a conversation</h2>
                   <p>Send your first message to {selectedUser.name}.</p>
                 </div>
@@ -1585,6 +1608,7 @@ function Chat({ currentUser, socket }) {
                   title="Attach"
                   onClick={() => {
                     setShowComposerHub(false);
+                    setShowMoreMenu(false);
                     setShowAttachMenu((open) => !open);
                   }}
                   type="button"

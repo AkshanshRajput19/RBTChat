@@ -24,7 +24,8 @@ function AuthLayout({
       <header className="auth-header">
         <div className="auth-brand">
           <div className="auth-brand-mark">
-            <img src="/image.png" alt="Company logo" />
+            <span />
+            <span />
           </div>
           <div className="auth-brand-copy">
             <strong>RBTChat</strong>
