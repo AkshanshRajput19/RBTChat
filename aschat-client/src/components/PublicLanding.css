@@ -1,12 +1,13 @@
 .public-page {
+  /* base variables already defined below; light mode overrides are provided via [data-theme="light"] */
   --public-bg: #05010b;
   --public-surface: rgba(17, 8, 28, 0.84);
   --public-surface-strong: rgba(10, 5, 18, 0.92);
   --public-surface-soft: rgba(176, 108, 255, 0.08);
-  --public-border: rgba(198, 152, 255, 0.24);
-  --public-border-strong: rgba(223, 194, 255, 0.5);
+  --public-border: rgba(198, 152, 255, 0.14);
+  --public-border-strong: rgba(223, 194, 255, 0.22);
   --public-text: #faf5ff;
-  --public-muted: #ccb9de;
+  --public-muted: rgba(250, 245, 255, 0.88);
   --public-accent: #b56eff;
   --public-accent-strong: #7f35ff;
   --public-accent-hot: #ff62da;
@@ -21,6 +22,111 @@
     linear-gradient(180deg, #020104 0%, #090213 42%, #04010a 100%);
   font-family: "Space Grotesk", "Segoe UI Variable Text", "Segoe UI", sans-serif;
   overflow-x: hidden;
+}
+
+/* Light theme overrides */
+[data-theme="light"] .public-page {
+  --public-bg: #f7f9fc;
+  --public-surface: rgba(255, 255, 255, 0.98);
+  --public-surface-strong: rgba(250, 250, 250, 1);
+  --public-surface-soft: rgba(124, 58, 237, 0.06);
+  --public-border: rgba(15, 23, 42, 0.06);
+  --public-border-strong: rgba(15, 23, 42, 0.08);
+  --public-text: #0b1220;
+  --public-muted: #475569;
+  --public-accent: #7c3aed;
+  --public-accent-strong: #5b21b6;
+  --public-accent-hot: #c026d3;
+  --public-shadow: 0 12px 30px rgba(11, 18, 32, 0.06);
+  background: linear-gradient(180deg, #f7f8fb 0%, #eef2f7 100%);
+}
+
+/* Theme toggle */
+.public-theme-toggle {
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--public-muted);
+  font-weight: 600;
+}
+
+.public-theme-toggle[aria-pressed="true"] {
+  color: var(--public-text);
+  border-color: rgba(0,0,0,0.06);
+  background: linear-gradient(135deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+}
+
+/* Appearance dropdown */
+.appearance-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.6rem;
+}
+
+.appearance-button {
+  padding: 0.76rem 1rem;
+  color: #ffffff;
+  background: transparent;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.appearance-button:hover {
+  color: var(--public-text);
+  border-color: rgba(225, 184, 255, 0.18);
+  background: rgba(180, 110, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.appearance-menu {
+  min-width: 200px;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  background: var(--public-surface-strong);
+  border: 1px solid var(--public-border-strong);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(6, 0, 14, 0.6);
+  z-index: 9999;
+}
+
+.appearance-menu-item {
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  color: var(--public-text);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.appearance-menu-item .appearance-icon {
+  width: 22px;
+  text-align: center;
+  opacity: 0.95;
+}
+
+.appearance-menu-item:hover {
+  background: linear-gradient(180deg, rgba(124,58,237,0.06), rgba(124,58,237,0.03));
+}
+
+.appearance-menu-item.active {
+  background: linear-gradient(135deg, var(--public-accent), var(--public-accent-strong));
+  color: #fff;
+}
+
+.appearance-menu-item.active::after {
+  content: "✔";
+  margin-left: auto;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
 }
 
 .public-page::before,
@@ -113,7 +219,7 @@
   gap: 1.4rem;
   padding: 0.8rem 1rem;
   border: 1px solid var(--public-border);
-  background: rgba(7, 4, 13, 0.82);
+  background: rgb(0, 0, 0);
   backdrop-filter: blur(18px);
   box-shadow: var(--public-shadow);
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
@@ -225,7 +331,7 @@
 .public-nav-link,
 .public-login-btn {
   padding: 0.76rem 1rem;
-  color: var(--public-muted);
+  color: rgba(250, 245, 255, 0.92);
   background: transparent;
   border: 1px solid transparent;
   text-transform: uppercase;
@@ -304,16 +410,16 @@
 
 .public-eyebrow,
 .public-section-eyebrow {
-  color: rgba(247, 236, 255, 0.7);
+  color: rgba(247, 236, 255, 0.95);
 }
 
 .public-copy h1 {
   max-width: 30ch;
   margin: 1rem 0 1.15rem;
-  font-size: clamp(3 rem, 2vw, 5.8rem);
-  line-height: 0.93;
+  font-size: clamp(1rem, 2.2vw, 4.2rem);
+  line-height: 0.98;
   text-transform: uppercase;
-  text-shadow: 0 0 22px rgba(179, 110, 255, 0.18);
+  text-shadow: 0 0 18px rgba(179, 110, 255, 0.14);
 }
 
 .public-description,
@@ -513,7 +619,7 @@
   gap: 0.9rem;
   width: min(33rem, 82vw);
   padding: 1rem 1.2rem;
-  color: rgba(244, 234, 255, 0.68);
+  color: rgba(244, 234, 255, 0.95);
   clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
 }
 
@@ -558,13 +664,13 @@
 }
 
 .public-event-meta span {
-  color: rgba(255, 255, 255, 0.84);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .public-event-headline strong {
   display: block;
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  line-height: 0.95;
+  font-size: clamp(1.8rem, 4vw, 3.4rem);
+  line-height: 0.98;
   text-transform: uppercase;
 }
 
@@ -622,7 +728,7 @@
 }
 
 .public-visual-note span {
-  color: rgba(248, 236, 255, 0.64);
+  color: rgba(248, 236, 255, 0.95);
 }
 
 .public-visual-note strong {
@@ -680,8 +786,8 @@
 
 .public-section-copy h2,
 .public-security-copy h2 {
-  font-size: clamp(2.1rem, 4vw, 3.35rem);
-  line-height: 1.02;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  line-height: 1.06;
   text-transform: uppercase;
 }
 
@@ -709,8 +815,8 @@
 .public-feature-card h3,
 .public-workflow-card h3,
 .public-faq-card h3 {
-  font-size: 1.32rem;
-  line-height: 1.2;
+  font-size: 1.12rem;
+  line-height: 1.25;
   text-transform: uppercase;
 }
 
@@ -727,7 +833,7 @@
 
 .public-workflow-card span,
 .public-plan-topline span {
-  color: rgba(243, 228, 255, 0.65);
+  color: rgba(250, 245, 255, 0.9);
 }
 
 .public-pricing-toggle {
@@ -742,7 +848,7 @@
 
 .public-pricing-toggle-btn {
   padding: 0.78rem 1.1rem;
-  color: var(--public-muted);
+  color: rgba(250, 245, 255, 0.92);
   background: transparent;
   border: 1px solid transparent;
   text-transform: uppercase;
@@ -769,6 +875,16 @@
 .public-plan-topline strong {
   font-size: 1.36rem;
   text-transform: uppercase;
+  color: var(--public-text);
+  font-weight: 800;
+}
+
+.public-plan-topline span {
+  color: var(--public-muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.98;
 }
 
 .public-plan-price {
@@ -781,10 +897,13 @@
 .public-plan-price h3 {
   font-size: clamp(2rem, 4vw, 2.9rem);
   line-height: 1;
+  color: var(--public-text);
+  font-weight: 800;
 }
 
 .public-plan-price p {
   color: var(--public-muted);
+  margin-left: 6px;
 }
 
 .public-plan-features {
@@ -796,8 +915,13 @@
   padding: 0.88rem 0.95rem;
   border: 1px solid rgba(226, 196, 255, 0.12);
   background: rgba(255, 255, 255, 0.03);
-  color: rgba(248, 241, 255, 0.94);
+  color: var(--public-muted);
   line-height: 1.55;
+}
+
+.public-plan-description {
+  color: var(--public-muted);
+  margin: 0.9rem 0 1.2rem;
 }
 
 .public-security-panel {
@@ -1054,11 +1178,11 @@
   }
 
   .public-command-stack,
-  .public-event-poster {
-    left: 1.3rem;
-    right: 1.3rem;
-    transform: none;
-    width: auto;
+  .public-event-poster p {
+    max-width: 29rem;
+    margin-top: 1.6rem;
+    color: rgba(248, 240, 255, 0.95);
+    line-height: 1.8;
   }
 
   .public-event-poster {
@@ -1250,6 +1374,20 @@
     font-size:13px;
 
     letter-spacing:2px;
+
+    color:#030202;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    padding: 0.5rem 0.75rem;
+
+    border-radius: 999px;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 .live-dot{

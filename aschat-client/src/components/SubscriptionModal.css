@@ -214,10 +214,10 @@
 .subscription-field textarea {
   width: 100%;
   padding: 0.96rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: #f2f1ee;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8f7f3;
   outline: none;
   transition:
     border-color 0.2s ease,
@@ -225,9 +225,21 @@
     box-shadow 0.2s ease;
 }
 
+.subscription-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: #f8f7f3;
+}
+
+.subscription-field option {
+  color: #0f172a;
+  background: #f8f7f3;
+}
+
 .subscription-field input::placeholder,
 .subscription-field textarea::placeholder {
-  color: rgba(242, 241, 238, 0.4);
+  color: rgba(242, 241, 238, 0.58);
 }
 
 .subscription-field input:focus,

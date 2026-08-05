@@ -220,6 +220,8 @@ function App() {
       <PublicLanding
         onLogin={() => setPublicView("login")}
         onRegister={() => setPublicView("register")}
+        theme={theme}
+        onThemeChange={setTheme}
       />
     );
   }

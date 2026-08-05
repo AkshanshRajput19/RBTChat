@@ -7,7 +7,8 @@ import {
   FaEnvelope,
   FaPhone,
 } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./PublicLanding.css";
 import SubscriptionModal from "./SubscriptionModal";
 
@@ -26,63 +27,71 @@ const navItems = [
 const featureCards = [
   {
     eyebrow: "Unified inbox",
-    title: "Bring support, sales, and community conversations into one command surface.",
-    text: "Messages, calls, updates, and AI summaries stay organized so teams can respond faster without looking scattered.",
+    title: "All customer messages in one place.",
+    text: "See and act on chats, calls, and updates without switching apps.",
   },
   {
-    eyebrow: "Executive visibility",
-    title: "Turn daily conversation volume into clean business signals.",
-    text: "Track message momentum, team responsiveness, and customer trends from the same place your work already happens.",
+    eyebrow: "Analytics",
+    title: "Clear signals from conversation data.",
+    text: "Quick insights about volume, response time, and trends.",
   },
   {
     eyebrow: "Human + AI",
-    title: "Use AI to draft replies, surface insights, and reduce repetitive effort.",
-    text: "Keep the human voice in front while AI quietly handles summaries, next steps, and pattern detection in the background.",
+    title: "AI that helps, not replaces.",
+    text: "Draft replies, summaries, and suggestions while you keep the final say.",
   },
 ];
 
 const workflowSteps = [
   {
     label: "01",
-    title: "Welcome visitors with a polished first impression",
-    text: "Lead with a professional homepage before authentication so the product feels credible from the first click.",
+    title: "Polished arrival",
+    text: "A clear, confident homepage that feels professional.",
   },
   {
     label: "02",
-    title: "Move seamlessly into secure access",
-    text: "Guide people from landing to login or registration without breaking the visual rhythm of the experience.",
+    title: "Fast access",
+    text: "Smooth path from discovery to login or signup.",
   },
   {
     label: "03",
-    title: "Keep conversations, calls, and insight connected",
-    text: "Once inside, the same platform continues as a cohesive workspace instead of feeling like a different app.",
+    title: "One workspace",
+    text: "Conversations, calls, and tools stay connected.",
   },
 ];
 
 const faqItems = [
   {
     question: "Who is RBTChat built for?",
-    answer: "Teams that want messaging, live support, stories, and AI help in one more professional customer-facing experience.",
+    answer: "Teams that need reliable messaging, support, and AI assistance.",
   },
   {
-    question: "Can the landing page stay separate from login and registration?",
-    answer: "Yes. The homepage now sits before authentication, while login and registration remain focused screens behind the main call to action.",
+    question: "Is the homepage separate from login?",
+    answer: "Yes — the landing leads into focused login and signup screens.",
   },
   {
-    question: "Does the new style work on mobile too?",
-    answer: "Yes. The layout is responsive, the navigation compresses cleanly, and the main hero stack adapts for smaller screens.",
+    question: "Is it mobile-friendly?",
+    answer: "Yes — responsive layouts and compressed navigation for small screens.",
   },
 ];
 
 const pricingPlans = {
   monthly: [
     {
+      name: "Try For Free",
+      price: 2,
+      cadence: "/ week",
+      badge: "Autopay trial",
+      description: "Free for 1 week with a refundable ₹2 Autopay setup hold.",
+      features: ["7-day free trial", "₹2 refundable setup", "Autopay onboarding"],
+    },
+    {
       name: "Starter",
       price: 399,
       cadence: "/ month",
       badge: "For lean teams",
-      description: "A clean starting point for small teams that need a more polished customer-facing communication layer.",
-      features: ["Secure login and registration", "Core messaging workspace", "Professional public landing page"],
+      description: "Core messaging and basic support tools.",
+      features: ["Messaging", "Public landing"],
     },
     {
       name: "Pro",
@@ -90,26 +99,34 @@ const pricingPlans = {
       cadence: "/ month",
       badge: "Most popular",
       featured: true,
-      description: "Built for growing teams that want stronger day-to-day collaboration with AI support and a sharper brand experience.",
-      features: ["Everything in Starter", "AI-assisted workflow", "Priority product experience"],
+      description: "AI features and priority support.",
+      features: ["AI assists", "Priority support"],
     },
     {
       name: "Enterprise",
       price: ENTERPRISE_MONTHLY_PRICE,
       cadence: "/ month",
       badge: "Scale confidently",
-      description: "For larger organizations that need a premium arrival experience, broader operations support, and deeper rollout control.",
-      features: ["Enterprise onboarding", "Expanded team rollout", "Advanced support coordination"],
+      description: "Advanced controls and rollout support.",
+      features: ["Onboarding", "Enterprise support"],
     },
   ],
   yearly: [
+    {
+      name: "Try For Free",
+      price: 2,
+      cadence: "/ week",
+      badge: "Autopay trial",
+      description: "Free for 1 week with a refundable ₹2 Autopay setup hold.",
+      features: ["7-day free trial", "₹2 refundable setup", "Autopay onboarding"],
+    },
     {
       name: "Starter",
       price: 4070,
       cadence: "/ year",
       badge: "Annual value",
-      description: "A lower-commitment yearly plan for teams that want the same polished public experience at a better annual rate.",
-      features: ["Secure login and registration", "Core messaging workspace", "Professional public landing page"],
+      description: "Core messaging with annual pricing.",
+      features: ["Messaging", "Public landing"],
     },
     {
       name: "Pro",
@@ -117,16 +134,16 @@ const pricingPlans = {
       cadence: "/ year",
       badge: "Best for growth",
       featured: true,
-      description: "A focused annual plan for teams using RBTChat as their more serious, always-on communication surface.",
-      features: ["Everything in Starter", "AI-assisted workflow", "Priority product experience"],
+      description: "AI and priority support for growing teams.",
+      features: ["AI assists", "Priority support"],
     },
     {
       name: "Enterprise",
       price: ENTERPRISE_YEARLY_PRICE,
       cadence: "/ year",
       badge: "Enterprise rollout",
-      description: "An annual plan for large-scale teams that want a premium first impression, reliable access flow, and stronger operational support.",
-      features: ["Enterprise onboarding", "Expanded team rollout", "Advanced support coordination"],
+      description: "Full enterprise features and rollout support.",
+      features: ["Onboarding", "Enterprise support"],
     },
   ],
 };
@@ -137,21 +154,21 @@ const reviewItems = [
     role: "Operations Lead",
     company: "Client support team",
     rating: "4.9 / 5",
-    quote: "The new public homepage makes the product feel much more credible before login, and the transition into the workspace now feels polished.",
+    quote: "The homepage feels credible and professional.",
   },
   {
     name: "Nisha Kapoor",
     role: "Growth Manager",
     company: "Digital services brand",
     rating: "5.0 / 5",
-    quote: "It finally feels like one product from top to bottom. Visitors land on something professional, and our team gets a cleaner flow into daily work.",
+    quote: "Cleaner flow from landing into product.",
   },
   {
     name: "Rohan Singh",
     role: "Founder",
     company: "Startup communication stack",
     rating: "4.8 / 5",
-    quote: "The darker premium theme gives the platform a more serious look, and the pricing layout is much easier to understand at a glance.",
+    quote: "Premium look and clearer pricing.",
   },
 ];
 
@@ -162,10 +179,14 @@ const formatPrice = (value) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-function PublicLanding({ onLogin, onRegister }) {
+function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
   const [billingCycle, setBillingCycle] = useState("monthly");
   const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
   const [selectedSubscriptionPlan, setSelectedSubscriptionPlan] = useState("Starter");
+  const [showAppearanceMenu, setShowAppearanceMenu] = useState(false);
+  const appearanceRef = useRef(null);
+  const buttonRef = useRef(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -179,6 +200,20 @@ function PublicLanding({ onLogin, onRegister }) {
     setSelectedSubscriptionPlan(planName);
     setIsSubscriptionOpen(true);
   };
+
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (!showAppearanceMenu) return;
+      // If click is inside the menu or on the button, do nothing
+      if (appearanceRef.current && appearanceRef.current.contains(e.target)) return;
+      if (buttonRef.current && buttonRef.current.contains(e.target)) return;
+
+      setShowAppearanceMenu(false);
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [showAppearanceMenu]);
 
   return (
     <div className="public-page">
@@ -213,6 +248,67 @@ function PublicLanding({ onLogin, onRegister }) {
           </nav>
 
           <div className="public-nav-actions">
+            <div className="appearance-wrapper">
+              <button
+                ref={buttonRef}
+                type="button"
+                className="appearance-button"
+                onClick={() => {
+                  if (showAppearanceMenu) {
+                    setShowAppearanceMenu(false);
+                    return;
+                  }
+
+                  const rect = buttonRef.current && buttonRef.current.getBoundingClientRect();
+                  setMenuPosition({
+                    top: rect ? rect.bottom + window.scrollY + 8 : 0,
+                    left: rect ? rect.left + window.scrollX : 0,
+                  });
+                  setShowAppearanceMenu(true);
+                }}
+                aria-expanded={showAppearanceMenu}
+                aria-haspopup="menu"
+                title="Appearance"
+              >
+                Appearance
+              </button>
+
+              {showAppearanceMenu &&
+                createPortal(
+                  <div
+                    ref={appearanceRef}
+                    className="appearance-menu"
+                    role="menu"
+                    style={{ position: "absolute", top: menuPosition.top, left: menuPosition.left }}
+                  >
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={`appearance-menu-item ${theme === "light" ? "active" : ""}`}
+                      onClick={() => {
+                        onThemeChange && onThemeChange("light");
+                        setShowAppearanceMenu(false);
+                      }}
+                    >
+                      ☀️ Light
+                    </button>
+
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={`appearance-menu-item ${theme === "dark" ? "active" : ""}`}
+                      onClick={() => {
+                        onThemeChange && onThemeChange("dark");
+                        setShowAppearanceMenu(false);
+                      }}
+                    >
+                      🌙 Dark
+                    </button>
+                  </div>,
+                  document.body
+                )}
+            </div>
+
             <button type="button" className="public-login-btn" onClick={onLogin}>
               Login
             </button>
@@ -226,14 +322,11 @@ function PublicLanding({ onLogin, onRegister }) {
       <main className="public-main">
         <section className="public-hero">
           <div className="public-copy">
-            <p className="public-eyebrow">Unified messaging platform // launch sequence</p>
-            
-            <h1>   One Platform
-                   Every Conversation
-            </h1>
+            <p className="public-eyebrow">Unified messaging platform</p>
+
+            <h1>One platform. Every conversation.</h1>
             <p className="public-description">
-              RBTChat now opens like a digital launch poster: bolder visuals, stronger motion,
-              and a sharper path from public discovery into conversations, calls, stories, and AI support.
+              A single app for messaging, calls, and AI-assisted replies.
             </p>
 
             <div className="public-cta-row">
@@ -246,87 +339,23 @@ function PublicLanding({ onLogin, onRegister }) {
             </div>
 
             <div className="public-proof-grid">
-              
               <div className="public-proof-card">
                 <strong>LIVE</strong>
-                <span>Public launch screen before auth</span>
+                <span>Public landing before sign-in</span>
               </div>
               <div className="public-proof-card">
                 <strong>AI</strong>
-                <span>Summaries, prompts, and guided replies</span>
+                <span>Smart replies and summaries</span>
               </div>
               <div className="public-proof-card">
                 <strong>SYNC</strong>
-                <span>Conversations, stories, and calls in one system</span>
+                <span>Conversations and calls together</span>
               </div>
             </div>
           </div>
-          <div className="public-dashboard">
+          
 
-    <div className="dashboard-header">
-        <div className="dashboard-live">
-            <span className="live-dot"></span>
-            LIVE
-        </div>
 
-         <strong>RBTCHAT</strong>
-         <div className="dashboard-actions">
-       
-    </div>
-    </div>
-
-    <div className="dashboard-search">
-        🔍 Search conversations...
-    </div>
-
-    <div className="dashboard-chat">
-        <div className="chat-avatar">R</div>
-
-        <div className="chat-content">
-            <strong>Rahul Sharma</strong>
-            <p>Need Enterprise pricing.</p>
-        </div>
-
-        <span className="online"></span>
-    </div>
-
-    <div className="dashboard-ai">
-        <div className="ai-icon">🤖</div>
-
-        <div>
-            <h4>AI Assistant</h4>
-
-            <p>
-                Customer is interested in Enterprise.
-                Generate proposal?
-            </p>
-
-            <div className="ai-progress">
-                <div className="ai-progress-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <div className="dashboard-stats">
-
-        <div>
-            <h2>1248</h2>
-            <span>Messages</span>
-        </div>
-
-        <div>
-            <h2>342</h2>
-            <span>Users</span>
-        </div>
-
-        <div>
-            <h2>99.9%</h2>
-            <span>Uptime</span>
-        </div>
-
-    </div>
-
-</div>
          
         </section>
         
@@ -348,7 +377,7 @@ function PublicLanding({ onLogin, onRegister }) {
         <section className="public-feature-section" id="features">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Platform</p>
-            <h2>A more credible first impression without losing the speed of your current app.</h2>
+            <h2>Credible homepage, fast access.</h2>
           </div>
 
           <div className="public-feature-grid">
@@ -365,7 +394,7 @@ function PublicLanding({ onLogin, onRegister }) {
         <section className="public-workflow-section" id="workflow">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Workflow</p>
-            <h2>Designed to feel intentional from first visit to active conversation.</h2>
+            <h2>Simple, intentional flow.</h2>
           </div>
 
           <div className="public-workflow-list">
@@ -383,7 +412,7 @@ function PublicLanding({ onLogin, onRegister }) {
           <div className="public-section-copy public-section-copy--with-toggle">
             <div>
               <p className="public-section-eyebrow">Pricing</p>
-              <h2>Simple rupee pricing with monthly and yearly billing options.</h2>
+              <h2>Transparent monthly & yearly plans.</h2>
             </div>
 
             <div className="public-pricing-toggle" role="tablist" aria-label="Pricing cadence">
@@ -442,21 +471,20 @@ function PublicLanding({ onLogin, onRegister }) {
           <div className="public-security-panel">
             <div className="public-security-copy">
               <p className="public-section-eyebrow">Security</p>
-              <h2>Secure access stays clear and simple once visitors are ready to continue.</h2>
+              <h2>Secure, simple access</h2>
               <p>
-                The new public layer improves presentation, while login and registration remain
-                direct, focused, and aligned with the same visual system.
+                A clear public homepage that keeps login and registration focused and secure.
               </p>
             </div>
 
             <div className="public-security-points">
               <div>
                 <strong>Focused authentication</strong>
-                <span>Login and registration keep their existing logic and now sit behind a stronger front page.</span>
+                <span>Login and signup remain simple and secure.</span>
               </div>
               <div>
-                <strong>Consistent visual language</strong>
-                <span>Dark neutrals, rounded chrome, and quiet motion carry across the entire public flow.</span>
+                <strong>Consistent look</strong>
+                <span>Same visual language across landing and app.</span>
               </div>
             </div>
           </div>

@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "nodemailer": "^9.0.3",
-    "razorpay": "^2.9.6",
-    "react-icons": "^5.7.0"
-  }
-}
