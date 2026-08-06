@@ -87,6 +87,14 @@ function ToolsIcon() {
   );
 }
 
+function FrontEndIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
 function CustomDomainIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -285,6 +293,13 @@ function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
           >
             <ToolsIcon />
             <span>Tools</span>
+          </button>
+          <button
+            className={activePage === "frontend" ? "active" : ""}
+            onClick={() => navigate("frontend")}
+          >
+            <FrontEndIcon />
+            <span>FrontEnd</span>
           </button>
        </nav>
         

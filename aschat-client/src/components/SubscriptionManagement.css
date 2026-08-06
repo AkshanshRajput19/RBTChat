@@ -29,10 +29,10 @@
 
 .subscription-admin-card,
 .subscription-admin-table {
-  background: linear-gradient(180deg, rgba(19, 23, 32, 0.96), rgba(12, 15, 22, 0.98));
-  border: 1px solid rgba(83, 92, 116, 0.35);
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.32);
   border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
 }
 
 .subscription-admin-card {
@@ -53,7 +53,7 @@
 .subscription-admin-inline-note span,
 .subscription-admin-form label span,
 .subscription-admin-quick-actions button span {
-  color: #9ea8bb;
+  color: #6b7280;
 }
 
 .subscription-admin-card--metric span {
@@ -66,7 +66,7 @@
 .subscription-admin-card--metric strong {
   display: block;
   margin-top: 10px;
-  color: #f8fafc;
+  color: #111827;
   font-size: 34px;
   line-height: 1;
 }
@@ -74,7 +74,7 @@
 .subscription-admin-card--metric small {
   display: block;
   margin-top: 14px;
-  color: #92a0b8;
+  color: #6b7280;
   line-height: 1.5;
 }
 
@@ -89,7 +89,7 @@
 .subscription-admin-card-head h3,
 .subscription-admin-toolbar h3 {
   margin: 0;
-  color: #f8fafc;
+  color: #111827;
   font-size: 21px;
 }
 
@@ -97,6 +97,7 @@
 .subscription-admin-toolbar p {
   margin: 8px 0 0;
   line-height: 1.55;
+  color: #4b5563;
 }
 
 .subscription-admin-quick-actions {
@@ -111,9 +112,9 @@
   align-items: flex-start;
   gap: 4px;
   padding: 16px 18px;
-  color: #f8fafc;
-  background: rgba(18, 24, 36, 0.95);
-  border: 1px solid rgba(85, 96, 124, 0.45);
+  color: #111827;
+  background: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.45);
   border-radius: 14px;
   transition:
     transform 160ms ease,
@@ -123,13 +124,13 @@
 
 .subscription-admin-quick-actions button:hover,
 .subscription-admin-quick-actions button:focus-visible {
-  background: rgba(28, 35, 50, 0.98);
-  border-color: rgba(111, 125, 160, 0.72);
+  background: #eef2ff;
+  border-color: rgba(148, 163, 184, 0.6);
   transform: translateY(-1px);
 }
 
 .subscription-admin-quick-actions button strong {
-  color: #f8fafc;
+  color: #111827;
   font-size: 15px;
 }
 
@@ -149,7 +150,7 @@
   justify-content: space-between;
   gap: 14px;
   padding: 13px 0;
-  border-bottom: 1px solid rgba(82, 91, 114, 0.2);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
 }
 
 .subscription-admin-detail-list div:last-child {
@@ -160,7 +161,7 @@
 .subscription-admin-detail-list strong,
 .subscription-admin-list-item strong,
 .subscription-admin-table-row strong {
-  color: #f8fafc;
+  color: #111827;
 }
 
 .subscription-admin-list {
@@ -175,8 +176,8 @@
   justify-content: space-between;
   gap: 18px;
   padding: 16px 18px;
-  background: rgba(17, 23, 34, 0.96);
-  border: 1px solid rgba(79, 90, 116, 0.35);
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 14px;
 }
 
@@ -266,21 +267,21 @@
 }
 
 .subscription-admin-primary-btn {
-  color: #0f172a;
-  background: #f6c25b;
+  color: #111827;
+  background: #fbbf24;
 }
 
 .subscription-admin-primary-btn:hover,
 .subscription-admin-primary-btn:focus-visible {
   transform: translateY(-1px);
-  background: #ffd27b;
+  background: #fcd34d;
 }
 
 .subscription-admin-secondary-btn,
 .subscription-admin-small-btn {
-  color: #e6ebf5;
-  background: rgba(15, 20, 29, 0.92);
-  border-color: rgba(90, 102, 130, 0.45);
+  color: #111827;
+  background: #f3f4f6;
+  border-color: #d1d5db;
 }
 
 .subscription-admin-secondary-btn:hover,
@@ -288,13 +289,13 @@
 .subscription-admin-small-btn:hover,
 .subscription-admin-small-btn:focus-visible {
   transform: translateY(-1px);
-  background: rgba(25, 31, 44, 0.98);
-  border-color: rgba(127, 142, 175, 0.56);
+  background: #e5e7eb;
+  border-color: #cbd5e1;
 }
 
 .subscription-admin-link {
   padding: 0;
-  color: #f6c25b;
+  color: #2563eb;
   background: transparent;
   border: 0;
 }
@@ -313,9 +314,9 @@
 .subscription-admin-form textarea {
   width: 100%;
   padding: 12px 14px;
-  color: #f8fafc;
-  background: rgba(11, 16, 24, 0.94);
-  border: 1px solid rgba(83, 94, 120, 0.45);
+  color: #111827;
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
   border-radius: 12px;
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease;
@@ -332,8 +333,8 @@
 .subscription-admin-form input:focus,
 .subscription-admin-form select:focus,
 .subscription-admin-form textarea:focus {
-  border-color: rgba(246, 194, 91, 0.9);
-  box-shadow: 0 0 0 3px rgba(246, 194, 91, 0.12);
+  border-color: rgba(37, 99, 235, 0.9);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .subscription-admin-table {
@@ -350,8 +351,8 @@
 }
 
 .subscription-admin-table-head {
-  background: rgba(16, 22, 32, 0.98);
-  border-bottom: 1px solid rgba(79, 89, 110, 0.35);
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .subscription-admin-table-head span {
@@ -359,15 +360,17 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #6b7280;
 }
 
 .subscription-admin-table-row + .subscription-admin-table-row {
-  border-top: 1px solid rgba(70, 79, 99, 0.26);
+  border-top: 1px solid #e5e7eb;
 }
 
 .subscription-admin-table-row strong {
   display: block;
   margin-bottom: 5px;
+  color: #111827;
 }
 
 .subscription-admin-copy {
@@ -384,9 +387,9 @@
 
 .subscription-admin-tag-list span {
   padding: 7px 11px;
-  color: #dfe6f4;
-  background: rgba(31, 40, 56, 0.92);
-  border: 1px solid rgba(93, 104, 132, 0.3);
+  color: #111827;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: 999px;
   font-size: 12px;
 }
@@ -416,8 +419,8 @@
   align-items: center;
   gap: 10px;
   padding: 14px 16px;
-  background: rgba(13, 19, 29, 0.92);
-  border: 1px solid rgba(83, 94, 120, 0.35);
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
   border-radius: 12px;
 }
 
@@ -430,15 +433,15 @@
 .subscription-admin-inline-note {
   grid-column: 1 / -1;
   padding: 16px 18px;
-  background: rgba(17, 23, 34, 0.96);
-  border: 1px solid rgba(79, 89, 110, 0.35);
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
   border-radius: 14px;
 }
 
 .subscription-admin-inline-note strong {
   display: block;
   margin-bottom: 8px;
-  color: #f8fafc;
+  color: #111827;
 }
 
 .subscription-admin-inline-note code {
@@ -447,25 +450,25 @@
 
 .subscription-admin-empty {
   padding: 22px;
-  color: #a9b3c6;
+  color: #475569;
   text-align: center;
-  background: rgba(16, 21, 31, 0.95);
-  border: 1px dashed rgba(87, 98, 123, 0.42);
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
   border-radius: 18px;
 }
 
 .subscription-admin-notice {
   padding: 14px 18px;
-  color: #ecfdf5;
-  background: rgba(5, 150, 105, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.38);
+  color: #065f46;
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
   border-radius: 14px;
 }
 
 .subscription-admin-notice.warning {
-  color: #fef3c7;
-  background: rgba(245, 158, 11, 0.18);
-  border-color: rgba(245, 158, 11, 0.34);
+  color: #92400e;
+  background: #fef3c7;
+  border-color: #fbbf24;
 }
 
 @media (max-width: 1320px) {
@@ -473,6 +476,117 @@
   .subscription-admin-grid--three {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+:root[data-theme="dark"] .subscription-admin-card,
+:root[data-theme="dark"] .subscription-admin-table {
+  background: linear-gradient(180deg, rgba(19, 23, 32, 0.96), rgba(12, 15, 22, 0.98));
+  border: 1px solid rgba(83, 92, 116, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme="dark"] .subscription-admin-card--metric span,
+:root[data-theme="dark"] .subscription-admin-detail-list span,
+:root[data-theme="dark"] .subscription-admin-table-row span,
+:root[data-theme="dark"] .subscription-admin-table-head span,
+:root[data-theme="dark"] .subscription-admin-list-item span,
+:root[data-theme="dark"] .subscription-admin-copy,
+:root[data-theme="dark"] .subscription-admin-card-head p,
+:root[data-theme="dark"] .subscription-admin-inline-note span,
+:root[data-theme="dark"] .subscription-admin-form label span,
+:root[data-theme="dark"] .subscription-admin-quick-actions button span {
+  color: #9ea8bb;
+}
+
+:root[data-theme="dark"] .subscription-admin-card--metric strong,
+:root[data-theme="dark"] .subscription-admin-card-head h3,
+:root[data-theme="dark"] .subscription-admin-toolbar h3,
+:root[data-theme="dark"] .subscription-admin-detail-list strong,
+:root[data-theme="dark"] .subscription-admin-list-item strong,
+:root[data-theme="dark"] .subscription-admin-table-row strong,
+:root[data-theme="dark"] .subscription-admin-inline-note strong {
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .subscription-admin-card-head p,
+:root[data-theme="dark"] .subscription-admin-toolbar p {
+  color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .subscription-admin-quick-actions button {
+  color: #f8fafc;
+  background: rgba(18, 24, 36, 0.95);
+  border-color: rgba(85, 96, 124, 0.45);
+}
+
+:root[data-theme="dark"] .subscription-admin-quick-actions button:hover,
+:root[data-theme="dark"] .subscription-admin-quick-actions button:focus-visible {
+  background: rgba(28, 35, 50, 0.98);
+  border-color: rgba(111, 125, 160, 0.72);
+}
+
+:root[data-theme="dark"] .subscription-admin-list-item {
+  background: rgba(17, 23, 34, 0.96);
+  border: 1px solid rgba(79, 90, 116, 0.35);
+}
+
+:root[data-theme="dark"] .subscription-admin-tag-list span {
+  color: #dfe6f4;
+  background: rgba(31, 40, 56, 0.92);
+  border-color: rgba(93, 104, 132, 0.3);
+}
+
+:root[data-theme="dark"] .subscription-admin-toolbar-controls input,
+:root[data-theme="dark"] .subscription-admin-toolbar-controls select,
+:root[data-theme="dark"] .subscription-admin-form input,
+:root[data-theme="dark"] .subscription-admin-form select,
+:root[data-theme="dark"] .subscription-admin-form textarea {
+  color: #f8fafc;
+  background: rgba(11, 16, 24, 0.94);
+  border-color: rgba(83, 94, 120, 0.45);
+}
+
+:root[data-theme="dark"] .subscription-admin-table-head {
+  background: rgba(16, 22, 32, 0.98);
+  border-bottom: 1px solid rgba(79, 89, 110, 0.35);
+}
+
+:root[data-theme="dark"] .subscription-admin-table-head span {
+  color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .subscription-admin-table-row + .subscription-admin-table-row {
+  border-top: 1px solid rgba(70, 79, 99, 0.26);
+}
+
+:root[data-theme="dark"] .subscription-admin-detail-list div {
+  border-bottom: 1px solid rgba(82, 91, 114, 0.2);
+}
+
+:root[data-theme="dark"] .subscription-admin-inline-note,
+:root[data-theme="dark"] .subscription-admin-checkbox,
+:root[data-theme="dark"] .subscription-admin-empty {
+  background: rgba(17, 23, 34, 0.96);
+  border-color: rgba(79, 89, 110, 0.35);
+}
+
+:root[data-theme="dark"] .subscription-admin-empty {
+  color: #a9b3c6;
+}
+
+:root[data-theme="dark"] .subscription-admin-secondary-btn,
+:root[data-theme="dark"] .subscription-admin-small-btn {
+  color: #e6ebf5;
+  background: rgba(15, 20, 29, 0.92);
+  border-color: rgba(90, 102, 130, 0.45);
+}
+
+:root[data-theme="dark"] .subscription-admin-secondary-btn:hover,
+:root[data-theme="dark"] .subscription-admin-secondary-btn:focus-visible,
+:root[data-theme="dark"] .subscription-admin-small-btn:hover,
+:root[data-theme="dark"] .subscription-admin-small-btn:focus-visible {
+  background: rgba(25, 31, 44, 0.98);
+  border-color: rgba(127, 142, 175, 0.56);
 }
 
 @media (max-width: 1080px) {

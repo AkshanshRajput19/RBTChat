@@ -1,6 +1,5 @@
 import Settings from "./components/Settings";
-import AI from "./components/AI";
-import { useEffect, useState } from "react";
+import AI from "./components/AI";import FrontEnd from "./components/FrontEnd";import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import PublicLanding from "./components/PublicLanding";
@@ -182,6 +181,8 @@ function App() {
     <AI currentUser={session.user} />
   ) : activePage === "tools" ? (
     <Tools />
+  ) : activePage === "frontend" ? (
+    <FrontEnd />
   ) : isSubscriptionPage ? (
     <SubscriptionManagement
       currentUser={session.user}

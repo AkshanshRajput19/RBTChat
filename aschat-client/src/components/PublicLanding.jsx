@@ -6,7 +6,8 @@ import {
   FaXTwitter,
   FaEnvelope,
   FaPhone,
-} from "react-icons/fa6";
+} 
+from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./PublicLanding.css";
@@ -215,6 +216,33 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [showAppearanceMenu]);
 
+  // Normalize heading text inside the landing page to title case
+  useEffect(() => {
+    try {
+      const headings = document.querySelectorAll(
+        ".public-page h1, .public-page h2, .public-page h3, .public-page h4, .public-page h5, .public-page h6"
+      );
+
+      headings.forEach((h) => {
+        // Preserve any non-text children by only transforming text nodes
+        const walker = document.createTreeWalker(h, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        textNodes.forEach((node) => {
+          const txt = node.nodeValue || "";
+          const transformed = txt
+            .toLowerCase()
+            .replace(/\b(\p{L})/gu, (m) => m.toUpperCase());
+          node.nodeValue = transformed;
+        });
+      });
+    } catch (err) {
+      // if anything goes wrong, fail silently to avoid breaking the page
+      // console.warn(err);
+    }
+  }, []);
+
   return (
     <div className="public-page">
       <div className="public-noise" aria-hidden="true" />
@@ -318,18 +346,18 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           </div>
         </div>
       </header>
-
+                
       <main className="public-main">
         <section className="public-hero">
           <div className="public-copy">
             <p className="public-eyebrow">Unified messaging platform</p>
 
-            <h1>One platform. Every conversation.</h1>
+            <h1>One Platform Every Conversation</h1>
             <p className="public-description">
               A single app for messaging, calls, and AI-assisted replies.
             </p>
 
-            <div className="public-cta-row">
+           <div className="public-cta-row">
               <button type="button" className="public-primary-btn" onClick={onRegister}>
                 Start Free
               </button>
@@ -340,19 +368,31 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
 
             <div className="public-proof-grid">
               <div className="public-proof-card">
-                <strong>LIVE</strong>
-                <span>Public landing before sign-in</span>
+                <strong>10k+</strong>
+                <span>Conversations handled monthly</span>
               </div>
               <div className="public-proof-card">
-                <strong>AI</strong>
-                <span>Smart replies and summaries</span>
+                <strong>98%</strong>
+                <span>Customer satisfaction score</span>
               </div>
               <div className="public-proof-card">
-                <strong>SYNC</strong>
-                <span>Conversations and calls together</span>
+                <strong>24/7</strong>
+                <span>AI-assisted support coverage</span>
               </div>
             </div>
           </div>
+          <div className="public-visual">
+            <p className="public-eyebrow">Why teams switch</p>
+            <h2 style={{ maxWidth: "30ch", lineHeight: 1.15, margin: "1rem 0" }}>
+              "We stopped losing conversations the day we moved to RBTChat."
+            </h2>
+            <p className="public-description">
+              One inbox for every channel, AI drafts that sound like your team,
+              and a support workflow that finally keeps up with real customers.
+            </p>
+          </div>
+         
+          
           
 
 
@@ -372,12 +412,13 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
             <span>Flow</span>
             <strong>Homepage first, authentication second, workspace always connected</strong>
           </div>
+          
         </section>
 
         <section className="public-feature-section" id="features">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Platform</p>
-            <h2>Credible homepage, fast access.</h2>
+            <h2>Credible homepage, fast access</h2>
           </div>
 
           <div className="public-feature-grid">
@@ -394,7 +435,7 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
         <section className="public-workflow-section" id="workflow">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Workflow</p>
-            <h2>Simple, intentional flow.</h2>
+            <h2>Simple, intentional flow</h2>
           </div>
 
           <div className="public-workflow-list">
@@ -412,7 +453,7 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           <div className="public-section-copy public-section-copy--with-toggle">
             <div>
               <p className="public-section-eyebrow">Pricing</p>
-              <h2>Transparent monthly & yearly plans.</h2>
+              <h2>Transparent monthly & yearly plans</h2>
             </div>
 
             <div className="public-pricing-toggle" role="tablist" aria-label="Pricing cadence">
@@ -493,7 +534,7 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
         <section className="public-reviews-section" id="reviews">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Reviews</p>
-            <h2>Teams respond better when the product already feels trustworthy before sign-in.</h2>
+            <h2>Teams respond better when the product already feels trustworthy before sign-in</h2>
           </div>
 
           <div className="public-review-grid">
@@ -514,7 +555,7 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
         <section className="public-faq-section" id="faq">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">FAQ</p>
-            <h2>Short answers for the public experience.</h2>
+            <h2>Short answers for the public experience</h2>
           </div>
 
           <div className="public-faq-grid">
