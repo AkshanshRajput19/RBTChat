@@ -10,6 +10,7 @@ import {
 from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useFrontendConfig } from "../frontendConfig";
 import "./PublicLanding.css";
 import SubscriptionModal from "./SubscriptionModal";
 
@@ -25,54 +26,36 @@ const navItems = [
   { label: "FAQ", id: "faq" },
 ];
 
-const featureCards = [
-  {
-    eyebrow: "Unified inbox",
-    title: "All customer messages in one place.",
-    text: "See and act on chats, calls, and updates without switching apps.",
-  },
-  {
-    eyebrow: "Analytics",
-    title: "Clear signals from conversation data.",
-    text: "Quick insights about volume, response time, and trends.",
-  },
-  {
-    eyebrow: "Human + AI",
-    title: "AI that helps, not replaces.",
-    text: "Draft replies, summaries, and suggestions while you keep the final say.",
-  },
-];
+const featureCards = ({ items, description }) =>
+  items.map((item, index) => ({
+    eyebrow: item,
+    title: item,
+    text: description,
+    key: `feature-${index}`,
+  }));
 
-const workflowSteps = [
-  {
-    label: "01",
-    title: "Polished arrival",
-    text: "A clear, confident homepage that feels professional.",
-  },
-  {
-    label: "02",
-    title: "Fast access",
-    text: "Smooth path from discovery to login or signup.",
-  },
-  {
-    label: "03",
-    title: "One workspace",
-    text: "Conversations, calls, and tools stay connected.",
-  },
-];
+const workflowStepsFromConfig = (steps) =>
+  steps.map((step, index) => ({
+    label: `${index + 1}`.padStart(2, "0"),
+    title: step,
+    text: step,
+    key: `workflow-${index}`,
+  }));
 
-const faqItems = [
+const faqItemsFromConfig = (questions) =>
+  questions.map((item, index) => ({
+    ...item,
+    key: `faq-${index}`,
+  }));
+
+const reviewItemsFromConfig = (review) => [
   {
-    question: "Who is RBTChat built for?",
-    answer: "Teams that need reliable messaging, support, and AI assistance.",
-  },
-  {
-    question: "Is the homepage separate from login?",
-    answer: "Yes — the landing leads into focused login and signup screens.",
-  },
-  {
-    question: "Is it mobile-friendly?",
-    answer: "Yes — responsive layouts and compressed navigation for small screens.",
+    name: review.name,
+    role: review.role,
+    company: review.company || "RBTChat user",
+    rating: `${review.rating} / 5`,
+    quote: review.quote,
+    key: "review-0",
   },
 ];
 
@@ -181,6 +164,7 @@ const formatPrice = (value) =>
   }).format(value);
 
 function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
+  const { config } = useFrontendConfig();
   const [billingCycle, setBillingCycle] = useState("monthly");
   const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
   const [selectedSubscriptionPlan, setSelectedSubscriptionPlan] = useState("Starter");
@@ -418,12 +402,13 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
         <section className="public-feature-section" id="features">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Platform</p>
-            <h2>Credible homepage, fast access</h2>
+            <h2>{config.platform.headline}</h2>
+            <p>{config.platform.description}</p>
           </div>
 
           <div className="public-feature-grid">
-            {featureCards.map((card) => (
-              <article key={card.title} className="public-feature-card">
+            {featureCards(config.platform).map((card) => (
+              <article key={card.key} className="public-feature-card">
                 <p>{card.eyebrow}</p>
                 <h3>{card.title}</h3>
                 <span>{card.text}</span>
@@ -435,12 +420,12 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
         <section className="public-workflow-section" id="workflow">
           <div className="public-section-copy">
             <p className="public-section-eyebrow">Workflow</p>
-            <h2>Simple, intentional flow</h2>
+            <h2>{config.workflow.headline}</h2>
           </div>
 
           <div className="public-workflow-list">
-            {workflowSteps.map((step) => (
-              <article key={step.label} className="public-workflow-card">
+            {workflowStepsFromConfig(config.workflow.steps).map((step) => (
+              <article key={step.key} className="public-workflow-card">
                 <span>{step.label}</span>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
@@ -453,7 +438,8 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           <div className="public-section-copy public-section-copy--with-toggle">
             <div>
               <p className="public-section-eyebrow">Pricing</p>
-              <h2>Transparent monthly & yearly plans</h2>
+              <h2>{config.pricing.headline}</h2>
+              <p>{config.pricing.description}</p>
             </div>
 
             <div className="public-pricing-toggle" role="tablist" aria-label="Pricing cadence">
@@ -512,21 +498,17 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           <div className="public-security-panel">
             <div className="public-security-copy">
               <p className="public-section-eyebrow">Security</p>
-              <h2>Secure, simple access</h2>
-              <p>
-                A clear public homepage that keeps login and registration focused and secure.
-              </p>
+              <h2>{config.security.headline}</h2>
+              <p>{config.security.description || "A clear public homepage that keeps login and registration focused and secure."}</p>
             </div>
 
             <div className="public-security-points">
-              <div>
-                <strong>Focused authentication</strong>
-                <span>Login and signup remain simple and secure.</span>
-              </div>
-              <div>
-                <strong>Consistent look</strong>
-                <span>Same visual language across landing and app.</span>
-              </div>
+              {config.security.bullets.map((bullet, index) => (
+                <div key={index}>
+                  <strong>{bullet}</strong>
+                  <span>&nbsp;</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -538,8 +520,8 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           </div>
 
           <div className="public-review-grid">
-            {reviewItems.map((review) => (
-              <article key={review.name} className="public-review-card">
+            {reviewItemsFromConfig(config.review).map((review) => (
+              <article key={review.key} className="public-review-card">
                 <div className="public-review-rating">{review.rating}</div>
                 <p className="public-review-quote">&ldquo;{review.quote}&rdquo;</p>
                 <div className="public-review-meta">
@@ -559,8 +541,8 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
           </div>
 
           <div className="public-faq-grid">
-            {faqItems.map((item) => (
-              <article key={item.question} className="public-faq-card">
+            {faqItemsFromConfig(config.faq.questions).map((item) => (
+              <article key={item.key} className="public-faq-card">
                 <h3>{item.question}</h3>
                 <p>{item.answer}</p>
               </article>
