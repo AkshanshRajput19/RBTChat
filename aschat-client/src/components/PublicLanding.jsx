@@ -611,11 +611,11 @@ function PublicLanding({ onLogin, onRegister, theme, onThemeChange }) {
       <h3>Contact</h3>
       <div className="public-footer-contact-item">
         <FaEnvelope />
-        <span>akshansh.singh@realbell.in</span>
+        <span>akshanshrajput</span>
       </div>
       <div className="public-footer-contact-item">
         <FaPhone />
-        <span>+91 6377425973</span>
+        <span>+91 63XXXXXXXX</span>
       </div>
       <p className="public-footer-desc">
         Empowering businesses with AI-powered messaging,
